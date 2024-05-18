@@ -3,6 +3,8 @@ import pest_pde as pp
 import numpy as np
 import matplotlib.pyplot as plt
 import scp_pest
+import os, io, json, dataclasses, jsons
+import inspect
 
 class MyTestCase(unittest.TestCase):
     def test_pde_mat(self):
@@ -97,16 +99,50 @@ class MyTestCase(unittest.TestCase):
     def test_plot_scp2(self):
         e = pp.Env()
         e.n = 5
-        s = np.load('scp_pest_s.npy')
-        u = np.load('scp_pest_u.npy')
+        s = np.load('scp_n5_linux1/scp_pest_s.npy')
+        u = np.load('scp_n5_linux1/scp_pest_u.npy')
+        pp.plot_states(e, s, u)
+
+    def test_plot_scpx(self):
+        e = pp.Env()
+        e.n = 5
+        s = np.load('scp_240517-182839/scp_pest_s.npy')
+        u = np.load('scp_240517-182839/scp_pest_u.npy')
         pp.plot_states(e, s, u)
 
     def test_plot_scp3(self):
         e = pp.Env()
-        e.n = 5
+        e.n = 7
         s = np.load('scp_pest_s.npy')
         u = np.load('scp_pest_u.npy')
         pp.plot_states(e, s, u)
+
+    def test_plot_scp_report(self):
+        e = pp.Env()
+        e.n = 7
+        s = np.load('scp_n7_ECOS_linux/scp_pest_s.npy')
+        u = np.load('scp_n7_ECOS_linux/scp_pest_u.npy')
+        pp.plot_states(e, s, u)
+
+    def test_source_dumper(self):
+        """ This could be handy. This code is like a mini-RCS. This
+        method is a little too beefy for datalassing it's bits. Well,
+        maybe."""
+        # serialize do_scp
+        file_do = 'test_do_scp.txt'
+        with io.open(file_do, 'w', encoding='utf-8') as f:
+            f.write(inspect.getsource(scp_pest.do_scp))
+
+    def test_time_stamper(self):
+        import datetime
+        now = datetime.datetime.now()
+        print(now.strftime("%Y%m%d-%H%M%S"))
+
+    def test_write_dataclass(self):
+        e = pp.Env()
+        file_env = os.path.join('pest_pde.env.json')
+        with io.open(file_env, 'w', encoding='utf-8') as f:
+            f.write(json.dumps(jsons.dump(e), ensure_ascii=False))
 
 if __name__ == '__main__':
     unittest.main()

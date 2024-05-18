@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 from functools import partial
 import cvxpy as cvx
@@ -5,6 +7,10 @@ import jax
 import jax.numpy as jnp
 from tqdm import tqdm
 import pest_pde
+import os
+import inspect
+import datetime
+import io, json, jsons
 
 @partial(jax.jit, static_argnums=(0,))
 @partial(jax.vmap, in_axes=(None, 0, 0))
@@ -180,7 +186,7 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
     constraints += [cvx.max(cvx.abs(u_cvx - u_prev)) <= ρ]
     # END PART (c) ############################################################
     prob = cvx.Problem(cvx.Minimize(objective), constraints)
-    prob.solve(solver=cvx.SCS)
+    prob.solve(solver=cvx.ECOS)
     #prob.solve()
     #prob.solve(verbose=True)
     if prob.status != "optimal":
@@ -191,7 +197,26 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
     return s, u, J
 
 
-def do_scp(pp_env):
+def serialize_scp_run(s: np.ndarray, u: np.ndarray, J: np.ndarray, pp_env: pest_pde.Env):
+    now = datetime.datetime.now()
+    rdir = 'scp_' + now.strftime('%y%m%d-%H%M%S')
+    os.makedirs(rdir, exist_ok=True)
+    np.save(os.path.join(rdir, 'scp_pest_s.npy'), s)
+    np.save(os.path.join(rdir, 'scp_pest_u.npy'), u)
+    np.save(os.path.join(rdir, 'scp_pest_J.npy'), J)
+
+    # serialize env
+    file_env = os.path.join(rdir, 'pest_pde.env.json')
+    with io.open(file_env, 'w', encoding='utf-8') as f:
+        f.write(json.dumps(jsons.dump(pp_env), ensure_ascii=False))
+
+    # serialize do_scp
+    file_do = os.path.join(rdir, 'do_scp.txt')
+    with io.open(file_do, 'w', encoding='utf-8') as f:
+        f.write(inspect.getsource(do_scp))
+
+
+def do_scp(pp_env: pest_pde.Env):
     # Define constants
     #pp_env = pest_pde.Env()
     n_s = pp_env.n**2
@@ -219,12 +244,14 @@ def do_scp(pp_env):
     N = t.size - 1
     s, u, J = solve_swingup_scp(fd, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters)
 
-    np.save('scp_pest_s.npy', s)
-    np.save('scp_pest_u.npy', u)
-    np.save('scp_pest_J.npy', J)
+    serialize_scp_run(s, u, J, pp_env)
 
     # Simulate open-loop control
     #for k in range(N):
     #    s[k + 1] = fd(s[k], u[k])
 
 
+if __name__ == '__main__':
+    env = pest_pde.Env()
+    env.n = 5
+    do_scp(env)

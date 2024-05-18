@@ -28,6 +28,8 @@ class Env:
     bc = BC.Neumann
 
 
+
+
 def build_fd_lap_matrix(n, bc: BC):
     if bc == BC.Dirichlet:
         """ build a homogeneous Dirichlet BC Laplacian fd matrix for a square domain of size nxn. This
@@ -96,7 +98,7 @@ def pests(s, u, e: Env, L:np.ndarray):
     ds = np.concatenate([dc, dp, dw])
     return ds
 
-def pests_jax(s, u, e: Env, L:np.ndarray):
+def pests_jax_orig(s, u, e: Env, L:np.ndarray):
     """compute state time derivative for the pest ODE."""
     # unpack s
     i = 0
@@ -106,6 +108,16 @@ def pests_jax(s, u, e: Env, L:np.ndarray):
     w = s[i+2*j:j+2*j]
     dc = -e.k_cp * p * c + e.k_c*(1 - c/e.K_c) * c
     dp = e.d_p * L @ p - e.k_pw * w * p + e.k_pc * c * p
+    dw = u - e.k_w * w
+    ds = jnp.concatenate([dc, dp, dw])
+    return ds
+
+def pests_jax(s, u, e: Env, L:np.ndarray):
+    """compute state time derivative for the pest ODE."""
+    # unpack s
+    c, p, w = jnp.split(s, 3)
+    dc = -e.k_cp * jnp.multiply(p,c) + e.k_c* jnp.multiply((1 - c/e.K_c),c)
+    dp = e.d_p * jnp.dot(L,p) - e.k_pw * jnp.multiply(w,p) + e.k_pc * jnp.multiply(c, p)
     dw = u - e.k_w * w
     ds = jnp.concatenate([dc, dp, dw])
     return ds
@@ -124,7 +136,7 @@ def init_state(e):
     #w1 = np.ones((e.n,1))
     #wv2 = wv * wv / (e.n**2/4)
     #w = wv2.T @ w1.T
-    w = 0.25 * np.ones((e.n, e.n))
+    w = np.zeros((e.n, e.n))
     # reshape into state
     c = np.reshape(c, (e.n ** 2,))
     p = np.reshape(p, (e.n ** 2,))
@@ -138,8 +150,11 @@ def plot_states(e, s_rec, u_rec):
     p_mask = build_p_mask(e.n)
     interval = u_rec.shape[0] // 10
     #interval = 1
-    for k in range(0, u_rec.shape[0], interval):
-    #for k in range(0, 10, interval):
+    kint = 0
+    plot_k = range(0, u_rec.shape[0], interval)
+    numplots = len(plot_k)
+    plt.figure(figsize=(8.5, 11))
+    for k in plot_k:
         s = s_rec[k]
         u = u_rec[k]
         # unpack s
@@ -149,17 +164,32 @@ def plot_states(e, s_rec, u_rec):
         p = np.reshape(s[i+j:j+j],(e.n,e.n))
         w = np.reshape(s[i+2*j:j+2*j],(e.n,e.n))
         u = np.reshape(u,(e.n,e.n))
-        plt.figure()
-        plt.subplot(141)
+        plt.subplot(numplots, 4, kint*4+1)
         plt.imshow(c, origin='lower',vmin=0, vmax=1)
-        plt.subplot(142)
+        if k == 0:
+            plt.title('c')
+        plt.ylabel(f"t={k}")
+        plt.xticks([])
+        plt.yticks([])
+        #plt.axis('off')
+        plt.subplot(numplots, 4, kint*4+2)
         plt.imshow(p, origin='lower',vmin=0, vmax=1)
-        plt.subplot(143)
+        if k == 0:
+            plt.title('p')
+        plt.axis('off')
+        plt.subplot(numplots, 4, kint*4+3)
         plt.imshow(w, origin='lower',vmin=0, vmax=1)
-        plt.subplot(144)
+        if k == 0:
+         plt.title('w')
+        plt.axis('off')
+        plt.subplot(numplots, 4, kint*4+4)
         plt.imshow(u, origin='lower',vmin=0, vmax=1)
-        plt.show()
+        if k == 0:
+         plt.title('u')
+        plt.axis('off')
+        kint += 1
         print([np.min(c), np.max(c), np.min(p), np.max(p), np.min(w), np.max(w), np.min(u), np.max(u)])
+    plt.show()
         #print(np.max([np.max(p[0,:]),np.max(p[:,0]),np.max(p[-1,:]),np.max(p[:,-1])]))
         #print(np.max([np.max(p[0, :]), np.max(p[:, 0])]))
 
