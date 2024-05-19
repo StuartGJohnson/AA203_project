@@ -124,6 +124,13 @@ class MyTestCase(unittest.TestCase):
         u = np.load('scp_n7_ECOS_linux/scp_pest_u.npy')
         pp.plot_states(e, s, u)
 
+    def test_plot_scp_report_early(self):
+        e = pp.Env()
+        e.n = 7
+        s = np.load('scp_n7_ECOS_linux/scp_pest_s.npy')
+        u = np.load('scp_n7_ECOS_linux/scp_pest_u.npy')
+        pp.plot_states(e, s, u, mode='early')
+
     def test_source_dumper(self):
         """ This could be handy. This code is like a mini-RCS. This
         method is a little too beefy for datalassing it's bits. Well,

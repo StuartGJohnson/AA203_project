@@ -146,12 +146,16 @@ def init_state(e):
     return s, u
 
 
-def plot_states(e, s_rec, u_rec):
+def plot_states(e, s_rec, u_rec, mode='strided'):
     p_mask = build_p_mask(e.n)
     interval = u_rec.shape[0] // 10
-    #interval = 1
     kint = 0
-    plot_k = range(0, u_rec.shape[0], interval)
+    if mode == 'strided':
+        plot_k = range(0, u_rec.shape[0], interval)
+    elif mode == 'early':
+        plot_k = range(0, 10)
+    else:
+        raise ValueError("mode must be either 'strided' or 'early'.")
     numplots = len(plot_k)
     plt.figure(figsize=(8.5, 11))
     for k in plot_k:
