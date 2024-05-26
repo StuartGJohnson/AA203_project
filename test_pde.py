@@ -199,7 +199,8 @@ class MyTestCase(unittest.TestCase):
         pp.animate_sim(rdir)
 
     def test_plot_scp_xxx(self):
-        rdir = 'scp_240525-230011'
+        #rdir = 'scp_240525-230011'
+        rdir = 'scp_240525-235048'
         s, u, env = pp.deserialize_sim(rdir)
         plt.figure()
         plt.plot(np.median(u, axis=1))

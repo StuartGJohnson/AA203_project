@@ -168,7 +168,7 @@ def pests_jax_orig(s, u, e: Env, L:np.ndarray):
     ds = jnp.concatenate([dc, dp, dw])
     return ds
 
-def pests_jax(s, u, e: Env, L:np.ndarray, b:np.ndarray):
+def pests_jax(s, u, e: Env, L:jnp.ndarray, b:jnp.ndarray):
     """compute state time derivative for the pest ODE."""
     # unpack s
     c, p, w = jnp.split(s, 3)
@@ -179,7 +179,7 @@ def pests_jax(s, u, e: Env, L:np.ndarray, b:np.ndarray):
     return ds
 
 
-def pests_aerial_jax(s, u, e: Env, L:np.ndarray, b:np.ndarray, u_pattern:np.ndarray):
+def pests_aerial_jax(s, u, e: Env, L:jnp.ndarray, b:jnp.ndarray, u_pattern:np.ndarray):
     """compute state time derivative for the pest ODE."""
     # unpack s
     c, p, w = jnp.split(s, 3)
@@ -326,12 +326,13 @@ class PestSim:
         self.Ljax = jnp.array(self.L)
         self.u_pattern = build_u_pattern(e)
         self.b = build_flux_matrix(e)
+        self.bjax = jnp.array(self.b)
 
     def pests_wrapper_su_jax(self, s, u):
-        return pests_jax(s, u, self.e, self.Ljax, self.b)
+        return pests_jax(s, u, self.e, self.Ljax, self.bjax)
 
     def pests_wrapper_aerial_su_jax(self, s, u):
-        return pests_aerial_jax(s, u, self.e, self.Ljax, self.b, self.u_pattern)
+        return pests_aerial_jax(s, u, self.e, self.Ljax, self.bjax, self.u_pattern)
 
     def pests_wrapper(self, s, t, u):
         return pests(s, u, self.e, self.L, self.b)

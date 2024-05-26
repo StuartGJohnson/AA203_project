@@ -182,10 +182,10 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
     u_cvx = cvx.Variable((N, m))
     # PART (c) ################################################################
     # INSTRUCTIONS: Construct the convex SCP sub-problem.
-    #objective = cvx.quad_form((s_cvx[N] - s_goal), P) + cvx.sum(
-    #    [cvx.quad_form(s_cvx[i1] - s_goal, Q) + cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
     objective = cvx.quad_form((s_cvx[N] - s_goal), P) + cvx.sum(
-        [cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
+        [cvx.quad_form(s_cvx[i1] - s_goal, Q) + cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
+    #objective = cvx.quad_form((s_cvx[N] - s_goal), P) + cvx.sum(
+    #    [cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
     constraints = [s_cvx[i2 + 1] == c[i2] + A[i2] @ (s_cvx[i2] - s_prev[i2]) +
                    B[i2] @ (u_cvx[i2] - u_prev[i2]) for i2 in range(N)]
     constraints += [s_cvx[0] == s0]
@@ -247,8 +247,8 @@ def do_scp(pp_env: pest_pde.Env):
     crop_target = pest_pde.crop_function(pp_env, T)
     s_goal = np.concatenate([crop_target * np.ones((n_s,)), np.zeros((n_s,)), np.zeros((n_s,))])  # desired field state
     P = 1e3 * np.eye(n)  # terminal state cost matrix
-    #Q = 1e1 * np.eye(n) # state cost matrix
-    Q = 0.0 * np.eye(n) # state cost matrix
+    Q = 1e1 * np.eye(n) # state cost matrix
+    #Q = 0.0 * np.eye(n) # state cost matrix
     if pp_env.u_mode == pest_pde.ControlMode.Aerial:
         R = 1e-1  # control cost
     else:
@@ -261,7 +261,7 @@ def do_scp(pp_env: pest_pde.Env):
 
     pest = pest_pde.PestSim(pp_env)
     # Initialize the discrete-time dynamics
-    if pp_env.u_mode == pest_pde.ControlMode.Aerial:
+    if pp_env.u_mode == pest_pde.ControlMode.Spot:
         fd = jax.jit(discretize(pest.pests_wrapper_su_jax, dt))
     else:
         fd = jax.jit(discretize(pest.pests_wrapper_aerial_su_jax, dt))
