@@ -53,8 +53,26 @@ class MyTestCase(unittest.TestCase):
 
     def test_init(self):
         e = pp.Env()
-        s,u = pp.init_state(e)
-        self.assertEqual(s.shape,(256*3,))
+        s,u,b = pp.init_state(e)
+        self.assertEqual(s.shape,(e.n**2*3,))
+        self.assertEqual(b.shape,(e.n**2,))
+        self.assertEqual(u.shape, (e.n ** 2,))
+        bp = np.reshape(b, (e.n, e.n))
+        plt.figure()
+        plt.imshow(bp, origin='lower')
+        plt.show()
+
+    def test_init2(self):
+        e = pp.Env()
+        e.u_mode = pp.ControlMode.Aerial
+        s,u,b = pp.init_state(e)
+        self.assertEqual(s.shape,(e.n**2*3,))
+        self.assertEqual(b.shape,(e.n**2,))
+        self.assertEqual(u, e.u0)
+        bp = np.reshape(b, (e.n, e.n))
+        plt.figure()
+        plt.imshow(bp, origin='lower')
+        plt.show()
 
     def test_dict(self):
         d = {'a':1,'b':2,'c':3,'d':4,'e':5}
@@ -64,17 +82,87 @@ class MyTestCase(unittest.TestCase):
 
     def test_simulate(self):
         e = pp.Env()
-        e.bc = pp.BC.Neumann
         ps = pp.PestSim(e)
         s, u = ps.simulate()
-        np.save('pest_s.npy', s)
-        np.save('pest_u.npy', u)
+        pp.serialize_sim(s, u, ps)
+
+    def test_simulate2(self):
+        e = pp.Env()
+        e.u_mode = pp.ControlMode.Aerial
+        ps = pp.PestSim(e)
+        s, u = ps.simulate()
+        pp.serialize_sim(s, u, ps)
+
+    def test_simulate3(self):
+        e = pp.Env()
+        e.u_mode = pp.ControlMode.Aerial
+        e.u0 = .05
+        ps = pp.PestSim(e)
+        s, u = ps.simulate()
+        pp.serialize_sim(s, u, ps)
+
+    def test_simulate4(self):
+        e = pp.Env()
+        e.u_mode = pp.ControlMode.Spot
+        e.u0 = .05
+        ps = pp.PestSim(e)
+        s, u = ps.simulate()
+        pp.serialize_sim(s, u, ps)
+
+    def test_deserialize(self):
+        rdir = 'sim_240525-135920'
+        s, u, sim_env = pp.deserialize_sim(rdir)
+        print(sim_env)
+
+    def test_animate_simulate(self):
+        rdir = 'sim_240525-135920'
+        pp.animate_sim(rdir)
+
+    def test_deserialize2(self):
+        rdir = 'sim_240525-135940'
+        s, u, sim_env = pp.deserialize_sim(rdir)
+        print(sim_env)
+
+    def test_animate_simulate2(self):
+        rdir = 'sim_240525-135940'
+        pp.animate_sim(rdir)
+
+    def test_deserialize3(self):
+        rdir = 'sim_240525-143439'
+        s, u, sim_env = pp.deserialize_sim(rdir)
+        print(sim_env)
+
+    def test_animate_simulate3(self):
+        rdir = 'sim_240525-143439'
+        pp.animate_sim(rdir)
+
+    def test_animate_simulate4(self):
+        rdir = 'sim_240525-143901'
+        pp.animate_sim(rdir)
+
+    def test_simulate2(self):
+        e = pp.Env()
+        e.u_mode = pp.ControlMode.Aerial
+        #e.bc = pp.BC.Neumann
+        ps = pp.PestSim(e)
+        s, u = ps.simulate()
+        pp.serialize_sim(s, u, ps)
 
     def test_plot_simulate(self):
         e = pp.Env()
         s = np.load('pest_s.npy')
         u = np.load('pest_u.npy')
         pp.plot_states(e, s, u)
+
+    def test_plot_simulate_pests(self):
+        e = pp.Env()
+        s = np.load('pest_s.npy')
+        #u = np.load('pest_u.npy')
+        p = s[:,e.n**2:2*e.n**2]
+        plt.figure()
+        plt.plot(np.max(p,axis=1))
+        plt.show()
+
 
     def test_pmask(self):
         e = pp.Env()
@@ -84,10 +172,52 @@ class MyTestCase(unittest.TestCase):
         # this should be zero
         print(L@(pm-1))
 
-    def test_scp(self):
+    def test_np_thing(self):
+        tmp = np.eye(1)
+        print(tmp)
+
+    def test_np_crap(self):
+        tmp = np.ones((10,1))
+        m = np.eye(1)
+        x = tmp[3].T @ m @ tmp[3]
+        print(x)
+
+    def test_scp_aerial(self):
         e = pp.Env()
         e.n = 5
+        e.u_mode = pp.ControlMode.Aerial
         scp_pest.do_scp(e)
+
+    def test_scp_spot(self):
+        e = pp.Env()
+        e.n = 5
+        e.u_mode = pp.ControlMode.Spot
+        scp_pest.do_scp(e)
+
+    def test_animate_scp(self):
+        rdir = 'scp_240525-223941'
+        pp.animate_sim(rdir)
+
+    def test_plot_scp_xxx(self):
+        rdir = 'scp_240525-230011'
+        s, u, env = pp.deserialize_sim(rdir)
+        plt.figure()
+        plt.plot(np.median(u, axis=1))
+        plt.title('u')
+        plt.show()
+        c,p,w = np.split(s,3, axis=1)
+        plt.figure()
+        plt.plot(np.sum(c, axis=1))
+        plt.title('c')
+        plt.show()
+        plt.figure()
+        plt.plot(np.sum(p, axis=1))
+        plt.title('p')
+        plt.show()
+        plt.figure()
+        plt.plot(np.sum(w, axis=1))
+        plt.title('w')
+        plt.show()
 
     def test_plot_scp(self):
         e = pp.Env()
@@ -130,6 +260,14 @@ class MyTestCase(unittest.TestCase):
         s = np.load('scp_n7_ECOS_linux/scp_pest_s.npy')
         u = np.load('scp_n7_ECOS_linux/scp_pest_u.npy')
         pp.plot_states(e, s, u, mode='early')
+
+    def test_plot_scp_report_movie(self):
+        e = pp.Env()
+        e.n = 7
+        s = np.load('scp_n7_ECOS_linux/scp_pest_s.npy')
+        u = np.load('scp_n7_ECOS_linux/scp_pest_u.npy')
+        ani = pp.animate_states(e, s, u)
+        ani.save(filename="scp_n7_ECOS_linux/scp_pest.mp4", writer="ffmpeg")
 
     def test_source_dumper(self):
         """ This could be handy. This code is like a mini-RCS. This

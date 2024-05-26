@@ -100,7 +100,10 @@ def solve_swingup_scp(f, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters):
         iteration, for `i = 0, 1, ..., (iteration when convergence occured)`
     """
     n = Q.shape[0]  # state dimension
-    m = R.shape[0]  # control dimension
+    if np.isscalar(R):
+        m = 1
+    else:
+        m = R.shape[0]  # control dimension
 
     # Initialize dynamically feasible nominal trajectories
     u = np.zeros((N, m))
@@ -170,13 +173,19 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
     A, B, c = affinize(f, s_prev[:-1], u_prev)
     A, B, c = np.array(A), np.array(B), np.array(c)
     n = Q.shape[0]
-    m = R.shape[0]
+    if np.isscalar(R):
+        m = 1
+        R = np.eye(1) * R
+    else:
+        m = R.shape[0]  # control dimension
     s_cvx = cvx.Variable((N + 1, n))
     u_cvx = cvx.Variable((N, m))
     # PART (c) ################################################################
     # INSTRUCTIONS: Construct the convex SCP sub-problem.
+    #objective = cvx.quad_form((s_cvx[N] - s_goal), P) + cvx.sum(
+    #    [cvx.quad_form(s_cvx[i1] - s_goal, Q) + cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
     objective = cvx.quad_form((s_cvx[N] - s_goal), P) + cvx.sum(
-        [cvx.quad_form(s_cvx[i1] - s_goal, Q) + cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
+        [cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
     constraints = [s_cvx[i2 + 1] == c[i2] + A[i2] @ (s_cvx[i2] - s_prev[i2]) +
                    B[i2] @ (u_cvx[i2] - u_prev[i2]) for i2 in range(N)]
     constraints += [s_cvx[0] == s0]
@@ -197,18 +206,22 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
     return s, u, J
 
 
-def serialize_scp_run(s: np.ndarray, u: np.ndarray, J: np.ndarray, pp_env: pest_pde.Env):
+def serialize_scp_run(s: np.ndarray, u: np.ndarray, J: np.ndarray, sim: pest_pde.PestSim):
     now = datetime.datetime.now()
     rdir = 'scp_' + now.strftime('%y%m%d-%H%M%S')
     os.makedirs(rdir, exist_ok=True)
-    np.save(os.path.join(rdir, 'scp_pest_s.npy'), s)
-    np.save(os.path.join(rdir, 'scp_pest_u.npy'), u)
-    np.save(os.path.join(rdir, 'scp_pest_J.npy'), J)
+    np.save(os.path.join(rdir, 'pest_s.npy'), s)
+    np.save(os.path.join(rdir, 'pest_J.npy'), J)
+    if sim.e.u_mode == pest_pde.ControlMode.Aerial:
+        u_save = sim.u_pattern * u
+        np.save(os.path.join(rdir, 'pest_u.npy'), u_save)
+    else:
+        np.save(os.path.join(rdir, 'pest_u.npy'), u)
 
     # serialize env
     file_env = os.path.join(rdir, 'pest_pde.env.json')
     with io.open(file_env, 'w', encoding='utf-8') as f:
-        f.write(json.dumps(jsons.dump(pp_env), ensure_ascii=False))
+        f.write(json.dumps(jsons.dump(sim.e), ensure_ascii=False))
 
     # serialize do_scp
     file_do = os.path.join(rdir, 'do_scp.txt')
@@ -221,14 +234,25 @@ def do_scp(pp_env: pest_pde.Env):
     #pp_env = pest_pde.Env()
     n_s = pp_env.n**2
     n = 3*n_s  # state dimension
-    m = n_s  # control dimension
+    if pp_env.u_mode == pest_pde.ControlMode.Aerial:
+        m = 1 # control dimension
+    else:
+        m = n_s # control dimension
     s0, u0 = pest_pde.init_state(pp_env)
-    s_goal = np.concatenate([np.ones((n_s,)), np.zeros((n_s,)), np.zeros((n_s,))])  # desired field state
     dt = 0.1  # discrete time resolution
     T = 10.0  # total simulation time
+    # we want crops at what we can expect at time t
+    # we want pest at 0
+    # we want pesticide at 0
+    crop_target = pest_pde.crop_function(pp_env, T)
+    s_goal = np.concatenate([crop_target * np.ones((n_s,)), np.zeros((n_s,)), np.zeros((n_s,))])  # desired field state
     P = 1e3 * np.eye(n)  # terminal state cost matrix
-    Q = 1e1 * np.eye(n) # state cost matrix
-    R = 1e-1 * np.eye(m)  # control cost matrix
+    #Q = 1e1 * np.eye(n) # state cost matrix
+    Q = 0.0 * np.eye(n) # state cost matrix
+    if pp_env.u_mode == pest_pde.ControlMode.Aerial:
+        R = 1e-1  # control cost
+    else:
+        R = 1e-1 * np.eye(m)  # control cost matrix
     ρ = 0.5  # trust region parameter
     u_max = 0.5  # control effort bound
     eps = 5e-2  # convergence tolerance
@@ -237,14 +261,17 @@ def do_scp(pp_env: pest_pde.Env):
 
     pest = pest_pde.PestSim(pp_env)
     # Initialize the discrete-time dynamics
-    fd = jax.jit(discretize(pest.pests_wrapper_su_jax, dt))
+    if pp_env.u_mode == pest_pde.ControlMode.Aerial:
+        fd = jax.jit(discretize(pest.pests_wrapper_su_jax, dt))
+    else:
+        fd = jax.jit(discretize(pest.pests_wrapper_aerial_su_jax, dt))
 
     # Solve the swing-up problem with SCP
     t = np.arange(0.0, T + dt, dt)
     N = t.size - 1
     s, u, J = solve_swingup_scp(fd, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters)
 
-    serialize_scp_run(s, u, J, pp_env)
+    serialize_scp_run(s, u, J, pest)
 
     # Simulate open-loop control
     #for k in range(N):
