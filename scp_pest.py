@@ -239,22 +239,26 @@ def do_scp(pp_env: pest_pde.Env):
     else:
         m = n_s # control dimension
     s0, u0 = pest_pde.init_state(pp_env)
-    dt = 0.1  # discrete time resolution
-    T = 10.0  # total simulation time
+    dt = pp_env.dt  # discrete time resolution
+    T = pp_env.T  # total simulation time
     # we want crops at what we can expect at time t
     # we want pest at 0
     # we want pesticide at 0
     crop_target = pest_pde.crop_function(pp_env, T)
+    print('crop_target: ' + str(crop_target))
     s_goal = np.concatenate([crop_target * np.ones((n_s,)), np.zeros((n_s,)), np.zeros((n_s,))])  # desired field state
-    P = 1e3 * np.eye(n)  # terminal state cost matrix
-    Q = 1e1 * np.eye(n) # state cost matrix
+    goal_weights = np.concatenate([np.ones((n_s,)), 10*np.ones((n_s,)), 0.001*np.ones((n_s,))])
+    P = 1e-1 * np.diag(goal_weights)
+    #P = 1e2 * np.eye(n)  # terminal state cost matrix
+    Q = 1e2 * np.diag(goal_weights)
+    #Q = 1e3 * np.eye(n) # state cost matrix
     #Q = 0.0 * np.eye(n) # state cost matrix
     if pp_env.u_mode == pest_pde.ControlMode.Aerial:
         R = 1e-1  # control cost
     else:
         R = 1e-1 * np.eye(m)  # control cost matrix
     ρ = 0.5  # trust region parameter
-    u_max = 0.5  # control effort bound
+    u_max = 10.0  # control effort bound
     eps = 5e-2  # convergence tolerance
     max_iters = 100  # maximum number of SCP iterations
     animate = False  # flag for animation

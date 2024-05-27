@@ -3,7 +3,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
-from dataclasses import dataclass, make_dataclass
+from dataclasses import dataclass, make_dataclass, asdict
 
 import scipy.ndimage as nd
 from scipy.integrate import odeint
@@ -27,24 +27,45 @@ class ControlMode(StrEnum):
 
 @dataclass
 class Env:
-    n = 5
-    k_cp = 0.2
-    k_pw = 0.3
-    k_pc = 0.2
-    d_p = 1.0
-    k_p = 0.025
-    k_w = 0.05
-    k_c = 0.1
-    K_c = 1.0
-    bc = BC.Neumann
-    c0 = 0.5
-    w0 = 0.0
-    u0 = 0.0
-    flux = 0.1 # amplitude of flux bc
-    flux_source_dist = 1 # in multiples of e.n
-    flux_source_angle_rad = -np.pi/4
-    pulse = 0.0 # amplitude of central pulse
-    u_mode = ControlMode.Spot
+    n: int = 5
+    k_cp: float = 0.2
+    k_pw: float = 0.3
+    k_pc: float = 0.2
+    d_p: float = 1.0
+    k_p: float = 0.025
+    k_w: float = 0.05
+    k_c: float = 0.1
+    K_c: float = 1.0
+    bc: BC = BC.Neumann
+    c0: float = 0.5
+    w0: float = 0.0
+    u0: float = 0.0
+    flux: float = 0.1 # amplitude of flux bc
+    flux_source_dist: float = 1 # in multiples of e.n
+    flux_source_angle_rad: float = -np.pi/4
+    pulse: float = 0.0 # amplitude of central pulse
+    u_mode: ControlMode = ControlMode.Spot
+    dt: float = 0.1
+    T: float = 10.0
+
+
+def patch_env(e: Env) -> Env:
+    """ Yeah, I don't like this either."""
+    if not hasattr(e, 'T'):
+        e.T = 10.0
+    if not hasattr(e, 'dt'):
+        e.dt = 0.1
+    # this should be done with json thing of some sort
+    # why doesn't this little crap work?
+    if e.u_mode == 'Aerial':
+        e.u_mode = ControlMode.Aerial
+    if e.u_mode == 'Spot':
+        e.u_mode = ControlMode.Spot
+    if e.bc == 'Neumann':
+        e.bc = BC.Neumann
+    if e.bc == 'Dirichlet':
+        e.bc = BC.Dirichlet
+    return e
 
 
 def build_fd_lap_matrix(n, bc: BC):
@@ -127,12 +148,7 @@ def build_flux_matrix(e: Env):
 def pests(s, u, e: Env, L:np.ndarray, b:np.ndarray):
     """compute state time derivative for the pest ODE."""
     # unpack s
-    #i = 0
-    #j = e.n**2
     c, p, w = np.split(s, 3)
-    #c = s[i:j]
-    #p = s[i+j:j+j]
-    #w = s[i+2*j:j+2*j]
     dc = -e.k_cp * p * c + e.k_c*(1 - c/e.K_c) * c
     dp = e.d_p * L @ p + b - e.k_pw * w * p + e.k_pc * c * p - e.k_p * p
     dw = u - e.k_w * w
@@ -142,12 +158,7 @@ def pests(s, u, e: Env, L:np.ndarray, b:np.ndarray):
 def pests_aerial(s, u, e: Env, L:np.ndarray, b:np.ndarray, u_pattern:np.ndarray):
     """compute state time derivative for the pest ODE. Aerial spraying mode."""
     # unpack s
-    #i = 0
-    #j = e.n**2
     c, p, w = np.split(s, 3)
-    #c = s[i:j]
-    #p = s[i+j:j+j]
-    #w = s[i+2*j:j+2*j]
     dc = -e.k_cp * p * c + e.k_c*(1 - c/e.K_c) * c
     dp = e.d_p * L @ p + b - e.k_pw * w * p + e.k_pc * c * p - e.k_p * p
     dw = u * u_pattern - e.k_w * w
@@ -367,6 +378,29 @@ class PestSim:
                     s[k + 1] = odeint(self.pests_wrapper_aerial, s[k], t[k:k + 2], (u[k],))[1]
         return s, u
 
+    def resimulate(self, s_ref, u):
+        """ reprocess scp (or sim!) output into a high fidelity state sequence"""
+        #s_init, u_init = init_state(self.e)
+        t = np.arange(0.0, self.e.T, self.e.dt)
+        num_timesteps = len(t)
+        u_vec=[]
+        if self.e.u_mode == ControlMode.Aerial:
+            # I am going to coerce this back to a vector
+            # so that we are reprocessing with the same f(s,u)
+            u_vec = np.median(u, axis=1)
+        n_sim = s_ref.shape[1]
+        s = np.zeros(shape=(num_timesteps, n_sim))
+        s[0] = s_ref[0]
+        for k in range(0, num_timesteps):
+            # this conditional prevents the last value in u from being
+            # unset
+            if k < num_timesteps - 1:
+                if self.e.u_mode == ControlMode.Spot:
+                    s[k + 1] = odeint(self.pests_wrapper, s[k], t[k:k + 2], (u[k],))[1]
+                else:
+                    s[k + 1] = odeint(self.pests_wrapper_aerial, s[k], t[k:k + 2], (u_vec[k],))[1]
+        return s, u
+
     def save_simulation(self, s, u):
         np.save('pest_s.npy', s)
         if self.e.u_mode == ControlMode.Aerial:
@@ -376,9 +410,12 @@ class PestSim:
             np.save('pest_u.npy', u)
 
 
-def serialize_sim(s: np.ndarray, u: np.ndarray, sim: PestSim):
-    now = datetime.datetime.now()
-    rdir = 'sim_' + now.strftime('%y%m%d-%H%M%S')
+def serialize_sim(s: np.ndarray, u: np.ndarray, sim: PestSim, override_dir: str = ''):
+    if override_dir == '':
+        now = datetime.datetime.now()
+        rdir = 'sim_' + now.strftime('%y%m%d-%H%M%S')
+    else:
+        rdir = override_dir
     os.makedirs(rdir, exist_ok=True)
     np.save(os.path.join(rdir, 'pest_s.npy'), s)
     if sim.e.u_mode == ControlMode.Aerial:
@@ -412,6 +449,8 @@ def deserialize_sim(rdir: str) -> (np.ndarray, np.ndarray, Env):
     with io.open(file_env, 'r', encoding='utf-8') as f:
         env_dict = json.load(f)
     env = make_dataclass("Env", env_dict)(**env_dict)
+    tmp = patch_env(env)
+    env = Env(**asdict(tmp))
 
     return s, u, env
 
