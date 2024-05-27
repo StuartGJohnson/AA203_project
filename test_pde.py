@@ -187,27 +187,31 @@ class MyTestCase(unittest.TestCase):
         e = pp.Env()
         e.n = 5
         e.u_mode = pp.ControlMode.Aerial
-        scp_pest.do_scp(e)
+        se = scp_pest.SCPEnv()
+        scp_pest.do_scp(e, se)
 
     def test_scp_aerial_fastw(self):
         e = pp.Env()
         e.n = 5
         e.u_mode = pp.ControlMode.Aerial
         e.k_w = 0.2
-        scp_pest.do_scp(e)
+        se = scp_pest.SCPEnv()
+        scp_pest.do_scp(e, se)
 
     def test_scp_spot(self):
         e = pp.Env()
         e.n = 5
         e.u_mode = pp.ControlMode.Spot
-        scp_pest.do_scp(e)
+        se = scp_pest.SCPEnv()
+        scp_pest.do_scp(e, se)
 
     def test_scp_spot_fastw(self):
         e = pp.Env()
         e.n = 5
         e.u_mode = pp.ControlMode.Spot
         e.k_w = 0.2
-        scp_pest.do_scp(e)
+        se = scp_pest.SCPEnv()
+        scp_pest.do_scp(e, se)
 
     def test_scp_spot_fastw_slowdp(self):
         e = pp.Env()
@@ -215,7 +219,8 @@ class MyTestCase(unittest.TestCase):
         e.u_mode = pp.ControlMode.Spot
         e.k_w = 0.2
         e.d_p = 0.3
-        scp_pest.do_scp(e)
+        se = scp_pest.SCPEnv()
+        scp_pest.do_scp(e, se)
 
     def test_scp_aerial_fastw_slowdp(self):
         e = pp.Env()
@@ -223,7 +228,8 @@ class MyTestCase(unittest.TestCase):
         e.u_mode = pp.ControlMode.Aerial
         e.k_w = 0.2
         e.d_p = 0.3
-        scp_pest.do_scp(e)
+        se = scp_pest.SCPEnv()
+        scp_pest.do_scp(e, se)
 
     def test_resim_scp(self):
         # run scp initial state and control back
@@ -272,7 +278,9 @@ class MyTestCase(unittest.TestCase):
         #rdir = 'scp_240526-160118'
         #rdir = 'scp_240526-160731'
         #rdir = 'resim_240526-160731'
-        rdir = 'resim_240526-160118'  
+        #rdir = 'resim_240526-160118'
+        #rdir = 'scp_240527-113133'
+        rdir = 'scp_240527-121309'
         s, u, env = pp.deserialize_sim(rdir)
         plt.figure()
         plt.plot(np.sum(u, axis=1))
@@ -388,6 +396,12 @@ class MyTestCase(unittest.TestCase):
     def test_write_dataclass(self):
         e = pp.Env()
         file_env = os.path.join('pest_pde.env.json')
+        with io.open(file_env, 'w', encoding='utf-8') as f:
+            f.write(json.dumps(jsons.dump(e), ensure_ascii=False))
+
+    def test_write_dataclass2(self):
+        e = scp_pest.SCPEnv()
+        file_env = os.path.join('scp.env.json')
         with io.open(file_env, 'w', encoding='utf-8') as f:
             f.write(json.dumps(jsons.dump(e), ensure_ascii=False))
 

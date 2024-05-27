@@ -11,6 +11,26 @@ import os
 import inspect
 import datetime
 import io, json, jsons
+from dataclasses import dataclass, make_dataclass, asdict
+
+
+@dataclass
+class SCPEnv:
+    P_wt: float = 1e-1
+    c_wt: float = 1.0
+    c_target: float = 1.0
+    c_target_compute: bool = True
+    p_wt: float = 10
+    p_target: float = 0.0
+    w_wt: float = 1e-3
+    w_target: float = 0.0
+    Q_wt: float = 1e2
+    R_wt: float = 1e-1
+    rho: float = 0.5
+    u_max: float = 10
+    eps: float = 5e-2
+    max_iters = 100
+
 
 @partial(jax.jit, static_argnums=(0,))
 @partial(jax.vmap, in_axes=(None, 0, 0))
@@ -58,7 +78,7 @@ def discretize(f, dt):
     return integrator
 
 
-def solve_swingup_scp(f, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters):
+def solve_swingup_scp(f, s0, s_goal, N, P, Q, R, u_max, rho, eps, max_iters):
     """Solve the cart-pole swing-up problem via SCP.
 
     Arguments
@@ -80,7 +100,7 @@ def solve_swingup_scp(f, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters):
         The control stage cost matrix (2-D).
     u_max : float
         The bound defining the control set `[-u_max, u_max]`.
-    ρ : float
+    rho : float
         Trust region radius.
     eps : float
         Termination threshold for SCP.
@@ -117,7 +137,7 @@ def solve_swingup_scp(f, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters):
     J = np.zeros(max_iters + 1)
     J[0] = np.inf
     for i in (prog_bar := tqdm(range(max_iters))):
-        s, u, J[i + 1] = scp_iteration(f, s0, s_goal, s, u, N, P, Q, R, u_max, ρ)
+        s, u, J[i + 1] = scp_iteration(f, s0, s_goal, s, u, N, P, Q, R, u_max, rho)
         dJ = np.abs(J[i + 1] - J[i])
         prog_bar.set_postfix({"objective change": "{:.5f}".format(dJ)})
         if dJ < eps:
@@ -130,7 +150,7 @@ def solve_swingup_scp(f, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters):
     return s, u, J
 
 
-def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
+def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, rho):
     """Solve a single SCP sub-problem for the cart-pole swing-up problem.
 
     Arguments
@@ -156,7 +176,7 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
         The control stage cost matrix (2-D).
     u_max : float
         The bound defining the control set `[-u_max, u_max]`.
-    ρ : float
+    rho : float
         Trust region radius.
 
     Returns
@@ -191,8 +211,8 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
     constraints += [s_cvx[0] == s0]
     constraints += [cvx.min(u_cvx) >= 0]
     constraints += [cvx.max(u_cvx) <= u_max]
-    constraints += [cvx.max(cvx.abs(s_cvx - s_prev)) <= ρ]
-    constraints += [cvx.max(cvx.abs(u_cvx - u_prev)) <= ρ]
+    constraints += [cvx.max(cvx.abs(s_cvx - s_prev)) <= rho]
+    constraints += [cvx.max(cvx.abs(u_cvx - u_prev)) <= rho]
     # END PART (c) ############################################################
     prob = cvx.Problem(cvx.Minimize(objective), constraints)
     prob.solve(solver=cvx.ECOS)
@@ -206,7 +226,7 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, ρ):
     return s, u, J
 
 
-def serialize_scp_run(s: np.ndarray, u: np.ndarray, J: np.ndarray, sim: pest_pde.PestSim):
+def serialize_scp_run(s: np.ndarray, u: np.ndarray, J: np.ndarray, sim: pest_pde.PestSim, scp_env: SCPEnv):
     now = datetime.datetime.now()
     rdir = 'scp_' + now.strftime('%y%m%d-%H%M%S')
     os.makedirs(rdir, exist_ok=True)
@@ -223,13 +243,18 @@ def serialize_scp_run(s: np.ndarray, u: np.ndarray, J: np.ndarray, sim: pest_pde
     with io.open(file_env, 'w', encoding='utf-8') as f:
         f.write(json.dumps(jsons.dump(sim.e), ensure_ascii=False))
 
-    # serialize do_scp
+    # serialize scp env
+    file_env = os.path.join(rdir, 'scp.env.json')
+    with io.open(file_env, 'w', encoding='utf-8') as f:
+        f.write(json.dumps(jsons.dump(scp_env), ensure_ascii=False))
+
+    # serialize do_scp - how loss is encoded is important
     file_do = os.path.join(rdir, 'do_scp.txt')
     with io.open(file_do, 'w', encoding='utf-8') as f:
         f.write(inspect.getsource(do_scp))
 
 
-def do_scp(pp_env: pest_pde.Env):
+def do_scp(pp_env: pest_pde.Env, scp_env: SCPEnv):
     # Define constants
     #pp_env = pest_pde.Env()
     n_s = pp_env.n**2
@@ -244,24 +269,28 @@ def do_scp(pp_env: pest_pde.Env):
     # we want crops at what we can expect at time t
     # we want pest at 0
     # we want pesticide at 0
-    crop_target = pest_pde.crop_function(pp_env, T)
+    if scp_env.c_target_compute:
+        crop_target = pest_pde.crop_function(pp_env, T)
+    else:
+        crop_target = scp_env.c_target
     print('crop_target: ' + str(crop_target))
-    s_goal = np.concatenate([crop_target * np.ones((n_s,)), np.zeros((n_s,)), np.zeros((n_s,))])  # desired field state
-    goal_weights = np.concatenate([np.ones((n_s,)), 10*np.ones((n_s,)), 0.001*np.ones((n_s,))])
-    P = 1e-1 * np.diag(goal_weights)
+    s_goal = np.concatenate([crop_target * np.ones((n_s,)),
+                             scp_env.p_target*np.ones((n_s,)),
+                             scp_env.w_target*np.ones((n_s,))])  # desired field state
+    goal_weights = np.concatenate([scp_env.c_wt*np.ones((n_s,)), scp_env.p_wt*np.ones((n_s,)), scp_env.w_wt*np.ones((n_s,))])
+    P = scp_env.P_wt * np.diag(goal_weights)
     #P = 1e2 * np.eye(n)  # terminal state cost matrix
-    Q = 1e2 * np.diag(goal_weights)
+    Q = scp_env.Q_wt * np.diag(goal_weights)
     #Q = 1e3 * np.eye(n) # state cost matrix
     #Q = 0.0 * np.eye(n) # state cost matrix
     if pp_env.u_mode == pest_pde.ControlMode.Aerial:
-        R = 1e-1  # control cost
+        R = scp_env.R_wt  # control cost
     else:
-        R = 1e-1 * np.eye(m)  # control cost matrix
-    ρ = 0.5  # trust region parameter
-    u_max = 10.0  # control effort bound
-    eps = 5e-2  # convergence tolerance
-    max_iters = 100  # maximum number of SCP iterations
-    animate = False  # flag for animation
+        R = scp_env.R_wt * np.eye(m)  # control cost matrix
+    rho = scp_env.rho  # trust region parameter
+    u_max = scp_env.u_max  # control effort bound
+    eps = scp_env.eps  # convergence tolerance
+    max_iters = scp_env.max_iters  # maximum number of SCP iterations
 
     pest = pest_pde.PestSim(pp_env)
     # Initialize the discrete-time dynamics
@@ -273,9 +302,9 @@ def do_scp(pp_env: pest_pde.Env):
     # Solve the swing-up problem with SCP
     t = np.arange(0.0, T + dt, dt)
     N = t.size - 1
-    s, u, J = solve_swingup_scp(fd, s0, s_goal, N, P, Q, R, u_max, ρ, eps, max_iters)
+    s, u, J = solve_swingup_scp(fd, s0, s_goal, N, P, Q, R, u_max, rho, eps, max_iters)
 
-    serialize_scp_run(s, u, J, pest)
+    serialize_scp_run(s, u, J, pest, scp_env)
 
     # Simulate open-loop control
     #for k in range(N):
@@ -283,6 +312,7 @@ def do_scp(pp_env: pest_pde.Env):
 
 
 if __name__ == '__main__':
-    env = pest_pde.Env()
-    env.n = 5
-    do_scp(env)
+    pp_env = pest_pde.Env()
+    scp_env = SCPEnv()
+    pp_env.n = 5
+    do_scp(pp_env, scp_env)

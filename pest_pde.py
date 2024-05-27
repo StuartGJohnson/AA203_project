@@ -17,13 +17,16 @@ import io, json, jsons
 import jax
 import jax.numpy as jnp
 
+
 class BC(StrEnum):
     Dirichlet = 'Dirichlet'
     Neumann = 'Neumann'
 
+
 class ControlMode(StrEnum):
     Aerial = 'Aerial'
     Spot = 'Spot'
+
 
 @dataclass
 class Env:
