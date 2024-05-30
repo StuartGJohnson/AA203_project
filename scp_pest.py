@@ -58,10 +58,15 @@ def affinize(f, s, u):
         `(s, u)` alone.
     """
     # PART (b) ################################################################
-    # INSTRUCTIONS: Use JAX to affinize `f` around `(s, u)` in two lines.
-    c = jax.jit(f)(s, u)
-    A, B = map(jnp.array, jax.jit(jax.jacfwd(f, (0, 1)))(s, u))
+    ## INSTRUCTIONS: Use JAX to affinize `f` around `(s, u)` in two lines.
+    #c = jax.jit(f)(s, u)
+    #A, B = map(jnp.array, jax.jit(jax.jacfwd(f, (0, 1)))(s, u))
+    # INSTRUCTIONS: Use JAX to affinize `f` around `(s,u)` in two lines.
+    A, B = jax.jacobian(f, (0, 1))(s, u)
+    # note this assumes we DO correct s and u when using A,B and c !
+    c = f(s, u)
     # END PART (b) ############################################################
+
     return A, B, c
 
 

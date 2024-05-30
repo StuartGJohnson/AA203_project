@@ -280,7 +280,8 @@ class MyTestCase(unittest.TestCase):
         #rdir = 'resim_240526-160731'
         #rdir = 'resim_240526-160118'
         #rdir = 'scp_240527-113133'
-        rdir = 'scp_240527-121309'
+        #rdir = 'scp_240527-121309'
+        rdir = 'scp_240529-151517'
         s, u, env = pp.deserialize_sim(rdir)
         plt.figure()
         plt.plot(np.sum(u, axis=1))
