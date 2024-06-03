@@ -49,7 +49,7 @@ class Env:
     pulse: float = 0.0 # amplitude of central pulse
     u_mode: ControlMode = ControlMode.Spot
     dt: float = 0.1
-    T: float = 10.0
+    T: float = 30.0
 
 
 def patch_env(e: Env) -> Env:
@@ -281,19 +281,20 @@ def animate_states(e, s_rec, u_rec):
     #ani.save(filename="ffmpeg_example.mp4", writer="ffmpeg")
 
 
-def plot_states(e, s_rec, u_rec, mode='strided'):
-    p_mask = build_p_mask(e.n)
-    interval = u_rec.shape[0] // 10
+def plot_states(e, s_rec, u_rec, mode='strided', step_count=10):
+    interval = u_rec.shape[0] // step_count
     kint = 0
     if mode == 'strided':
         plot_k = range(0, u_rec.shape[0], interval)
     elif mode == 'early':
-        plot_k = range(0, 10)
+        plot_k = range(0, step_count)
     else:
         raise ValueError("mode must be either 'strided' or 'early'.")
     numplots = len(plot_k)
-    plt.figure(figsize=(8.5, 11))
+    #plt.figure(figsize=(8.5, 11))
+    pfig = plt.figure()
     for k in plot_k:
+        t = e.dt * k
         s = s_rec[k]
         u = u_rec[k]
         # unpack s
@@ -307,7 +308,7 @@ def plot_states(e, s_rec, u_rec, mode='strided'):
         plt.imshow(c, origin='lower',vmin=0, vmax=1)
         if k == 0:
             plt.title('c')
-        plt.ylabel(f"t={k}")
+        plt.ylabel(f"t={t}")
         plt.xticks([])
         plt.yticks([])
         #plt.axis('off')
@@ -319,18 +320,17 @@ def plot_states(e, s_rec, u_rec, mode='strided'):
         plt.subplot(numplots, 4, kint*4+3)
         plt.imshow(w, origin='lower',vmin=0, vmax=1)
         if k == 0:
-         plt.title('w')
+            plt.title('w')
         plt.axis('off')
         plt.subplot(numplots, 4, kint*4+4)
         plt.imshow(u, origin='lower',vmin=0, vmax=1)
         if k == 0:
-         plt.title('u')
+            plt.title('u')
         plt.axis('off')
         kint += 1
         print([np.min(c), np.max(c), np.min(p), np.max(p), np.min(w), np.max(w), np.min(u), np.max(u)])
     plt.show()
-        #print(np.max([np.max(p[0,:]),np.max(p[:,0]),np.max(p[-1,:]),np.max(p[:,-1])]))
-        #print(np.max([np.max(p[0, :]), np.max(p[:, 0])]))
+    return pfig
 
 
 class PestSim:
@@ -355,9 +355,8 @@ class PestSim:
         return pests_aerial(s, u, self.e, self.L, self.b, self.u_pattern)
 
     def simulate(self):
-        # todo: also need a simulator which simulates from SCP controls (and initial s)
         s_init, u_init = init_state(self.e)
-        t = np.arange(0.0, 30.0, 1 / 10)
+        t = np.arange(0.0, self.e.T, self.e.dt)
         num_timesteps = len(t)
         if self.e.u_mode == ControlMode.Aerial:
             m_sim = 1
