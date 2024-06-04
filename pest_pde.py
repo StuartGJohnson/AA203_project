@@ -232,21 +232,16 @@ def init_state(e):
         u = e.u0
     return s, u
 
-def unpack_frame(k, e, s, u):
-    sk = s[k]
-    uk = u[k]
-    # unpack s
-    i = 0
-    j = e.n**2
-    cf = np.reshape(sk[i:j],(e.n,e.n))
-    pf = np.reshape(sk[i+j:j+j],(e.n,e.n))
-    wf = np.reshape(sk[i+2*j:j+2*j],(e.n,e.n))
-    uf = np.reshape(uk,(e.n,e.n))
+def unpack_frame(k, e, ca, pa, wa, u):
+    cf = np.reshape(ca[k],(e.n,e.n))
+    pf = np.reshape(pa[k],(e.n,e.n))
+    wf = np.reshape(wa[k],(e.n,e.n))
+    uf = np.reshape(u[k],(e.n,e.n))
     return cf, pf, wf, uf
 
 def animate_states(e, s_rec, u_rec):
     def update(kf):
-        cf, pf, wf, uf = unpack_frame(kf, e, s_rec, u_rec)
+        cf, pf, wf, uf = unpack_frame(kf, e, ca, pa, wa, u_rec)
         c_im.set_data(cf)
         p_im.set_data(pf)
         w_im.set_data(wf)
@@ -255,24 +250,29 @@ def animate_states(e, s_rec, u_rec):
     numplots = 1
     numframes = s_rec.shape[0]
     k = 1
-    c, p, w, u = unpack_frame(k, e, s_rec, u_rec)
+    ca, pa, wa = np.split(s_rec, 3, axis=1)
+    cmax = np.max(ca)
+    pmax = np.max(pa)
+    wmax = np.max(wa)
+    umax = np.max(u_rec)
+    c, p, w, u = unpack_frame(k, e, ca, pa, wa, u_rec)
     fig = plt.figure()
     plt.subplot(numplots, 4, 1)
-    c_im = plt.imshow(c, origin='lower',vmin=0, vmax=1)
+    c_im = plt.imshow(c, origin='lower',vmin=0, vmax=cmax)
     plt.title('c')
     #plt.ylabel(f"t={k}")
     plt.xticks([])
     plt.yticks([])
     plt.subplot(numplots, 4, 2)
-    p_im = plt.imshow(p, origin='lower',vmin=0, vmax=1)
+    p_im = plt.imshow(p, origin='lower',vmin=0, vmax=pmax)
     plt.title('p')
     plt.axis('off')
     plt.subplot(numplots, 4, 3)
-    w_im = plt.imshow(w, origin='lower',vmin=0, vmax=1)
+    w_im = plt.imshow(w, origin='lower',vmin=0, vmax=wmax)
     plt.title('w')
     plt.axis('off')
     plt.subplot(numplots, 4, 4)
-    u_im = plt.imshow(u, origin='lower',vmin=0, vmax=1)
+    u_im = plt.imshow(u, origin='lower',vmin=0, vmax=umax)
     plt.title('u')
     plt.axis('off')
 
@@ -293,19 +293,24 @@ def plot_states(e, s_rec, u_rec, mode='strided', step_count=10):
     numplots = len(plot_k)
     #plt.figure(figsize=(8.5, 11))
     pfig = plt.figure()
+    ca, pa, wa = np.split(s_rec, 3, axis=1)
+    cmax = np.max(ca)
+    pmax = np.max(pa)
+    wmax = np.max(wa)
+    umax = np.max(u_rec)
     for k in plot_k:
         t = e.dt * k
-        s = s_rec[k]
+        #s = s_rec[k]
         u = u_rec[k]
         # unpack s
         i = 0
         j = e.n**2
-        c = np.reshape(s[i:j],(e.n,e.n))
-        p = np.reshape(s[i+j:j+j],(e.n,e.n))
-        w = np.reshape(s[i+2*j:j+2*j],(e.n,e.n))
+        c = np.reshape(ca[k],(e.n,e.n))
+        p = np.reshape(pa[k],(e.n,e.n))
+        w = np.reshape(wa[k],(e.n,e.n))
         u = np.reshape(u,(e.n,e.n))
         plt.subplot(numplots, 4, kint*4+1)
-        plt.imshow(c, origin='lower',vmin=0, vmax=1)
+        plt.imshow(c, origin='lower',vmin=0, vmax=cmax)
         if k == 0:
             plt.title('c')
         plt.ylabel(f"t={t}")
@@ -313,17 +318,17 @@ def plot_states(e, s_rec, u_rec, mode='strided', step_count=10):
         plt.yticks([])
         #plt.axis('off')
         plt.subplot(numplots, 4, kint*4+2)
-        plt.imshow(p, origin='lower',vmin=0, vmax=1)
+        plt.imshow(p, origin='lower',vmin=0, vmax=pmax)
         if k == 0:
             plt.title('p')
         plt.axis('off')
         plt.subplot(numplots, 4, kint*4+3)
-        plt.imshow(w, origin='lower',vmin=0, vmax=1)
+        plt.imshow(w, origin='lower',vmin=0, vmax=wmax)
         if k == 0:
             plt.title('w')
         plt.axis('off')
         plt.subplot(numplots, 4, kint*4+4)
-        plt.imshow(u, origin='lower',vmin=0, vmax=1)
+        plt.imshow(u, origin='lower',vmin=0, vmax=umax)
         if k == 0:
             plt.title('u')
         plt.axis('off')
