@@ -289,7 +289,10 @@ def do_scp(pp_env: pest_pde.Env, scp_env: SCPEnv):
     #Q = 1e3 * np.eye(n) # state cost matrix
     #Q = 0.0 * np.eye(n) # state cost matrix
     if pp_env.u_mode == pest_pde.ControlMode.Aerial:
-        R = scp_env.R_wt  # control cost
+        # note we need to adjust this by the length of
+        # the u_pattern used in the pde. I am assuming
+        # it is a constant here!
+        R = scp_env.R_wt * pp_env.n**2 # control cost
     else:
         R = scp_env.R_wt * np.eye(m)  # control cost matrix
     rho = scp_env.rho  # trust region parameter
