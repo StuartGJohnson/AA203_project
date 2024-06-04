@@ -260,7 +260,7 @@ def animate_states(e, s_rec, u_rec):
     plt.subplot(numplots, 4, 1)
     c_im = plt.imshow(c, origin='lower',vmin=0, vmax=1)
     plt.title('c')
-    plt.ylabel(f"t={k}")
+    #plt.ylabel(f"t={k}")
     plt.xticks([])
     plt.yticks([])
     plt.subplot(numplots, 4, 2)
