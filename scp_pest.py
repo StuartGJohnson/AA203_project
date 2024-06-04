@@ -209,6 +209,8 @@ def scp_iteration(f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max, rho):
     # INSTRUCTIONS: Construct the convex SCP sub-problem.
     objective = cvx.quad_form((s_cvx[N] - s_goal), P) + cvx.sum(
         [cvx.quad_form(s_cvx[i1] - s_goal, Q) + cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
+    #objective = cvx.norm(P@(s_cvx[N] - s_goal), 1) + cvx.sum(
+    #    [cvx.norm(Q@(s_cvx[i1] - s_goal), 1) + cvx.norm(R @ u_cvx[i1], 1) for i1 in range(N)])
     #objective = cvx.quad_form((s_cvx[N] - s_goal), P) + cvx.sum(
     #    [cvx.quad_form(u_cvx[i1], R) for i1 in range(N)])
     constraints = [s_cvx[i2 + 1] == c[i2] + A[i2] @ (s_cvx[i2] - s_prev[i2]) +

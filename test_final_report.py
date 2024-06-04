@@ -17,7 +17,7 @@ def plot_stats(t, f):
 def time_plots(rdir):
     s, u, env = pp.deserialize_sim(rdir)
     time = env.dt * np.arange(0, len(s))
-    time_u = time[:-1]
+    time_u = env.dt * np.arange(0, len(u))
     tmax = time[-1]
     crop_max = pp.crop_function(env,tmax)
     crop_max_sum = crop_max * env.n**2
@@ -84,23 +84,27 @@ class MyTestCase2(unittest.TestCase):
         e.u_mode = pp.ControlMode.Aerial
         e.u0 = 0.0
         e.k_w = 0.2
-        e.d_p = 0.3
+        e.d_p = 0.15
+        ps = pp.PestSim(e)
         ps = pp.PestSim(e)
         s, u = ps.simulate()
         pp.serialize_sim(s, u, ps)
 
     def test_fr_anim_sim_no_control(self):
         rdir = 'sim_240603-103842'
+        rdir = 'sim_240604-091905'
         pp.animate_sim(rdir)
 
     def test_fr_plot_sim_not_control(self):
         rdir = 'sim_240603-103842'
+        rdir = 'sim_240604-091905'
         s, u, env = pp.deserialize_sim(rdir)
         pfig = pp.plot_states(env, s, u, mode='strided', step_count=5)
         pfig.savefig(os.path.join(rdir,'slices.png'))
 
     def test_fr_time_plots_sim_no_control(self):
         rdir = 'sim_240603-103842'
+        rdir = 'sim_240604-091905'
         pfig = time_plots(rdir)
         pfig.savefig(os.path.join(rdir, 'time.png'))
 
@@ -111,7 +115,7 @@ class MyTestCase2(unittest.TestCase):
         e.n = 5
         e.u_mode = pp.ControlMode.Aerial
         e.k_w = 0.2
-        e.d_p = 0.3
+        e.d_p = 0.15
         e.T = 10 + 2 * e.dt
         se = scp_pest.SCPEnv()
         se.rho = 0.5
@@ -121,11 +125,15 @@ class MyTestCase2(unittest.TestCase):
     def test_fr_anim_scp_aerial_fastw_slowdp(self):
         rdir = 'scp_240603-152427'
         rdir = 'scp_240603-181903'
+        rdir = 'scp_240604-011359'
+        rdir = 'scp_240604-094914'
         pp.animate_sim(rdir)
 
     def test_fr_plot_scp_aerial_fastw_slowdp(self):
         rdir = 'scp_240603-152427'
         rdir = 'scp_240603-181903'
+        rdir = 'scp_240604-011359'
+        rdir = 'scp_240604-094914'
         s, u, env = pp.deserialize_sim(rdir)
         pfig = pp.plot_states(env, s, u, mode='strided', step_count=5)
         pfig.savefig(os.path.join(rdir,'slices.png'))
@@ -133,6 +141,8 @@ class MyTestCase2(unittest.TestCase):
     def test_fr_time_plots_scp_aerial_fastw_slowdp(self):
         rdir = 'scp_240603-152427'
         rdir = 'scp_240603-181903'
+        rdir = 'scp_240604-011359'
+        rdir = 'scp_240604-094914'
         pfig = time_plots(rdir)
         pfig.savefig(os.path.join(rdir, 'time.png'))
 
@@ -143,13 +153,15 @@ class MyTestCase2(unittest.TestCase):
         e.n = 5
         e.u_mode = pp.ControlMode.Aerial
         e.k_w = 0.2
-        e.d_p = 0.3
+        e.d_p = 0.15
         e.T = 10 + 2 * e.dt
         se = scp_pest.SCPEnv()
         se.rho = 0.5
         se.P_wt = 1e2
         se.Q_wt = 1e-1
+        se.R_wt = 1e-3
         se.w_wt = 1e-2
+        se.eps = 0.05 # hmm
         scp_pest.do_scp(e, se)
 
     def test_fr_anim_scp_aerial_fastw_slowdp_flipped(self):
@@ -157,6 +169,9 @@ class MyTestCase2(unittest.TestCase):
         rdir = 'scp_240603-180508'
         rdir = 'scp_240603-181411'
         rdir = 'scp_240603-182214'
+        rdir = 'scp_240604-013023'
+        rdir = 'scp_240604-021019'
+        rdir = 'scp_240604-091225'
         pp.animate_sim(rdir)
 
     def test_fr_plot_scp_aerial_fastw_slowdp_flipped(self):
@@ -164,6 +179,9 @@ class MyTestCase2(unittest.TestCase):
         rdir = 'scp_240603-180508'
         rdir = 'scp_240603-181411'
         rdir = 'scp_240603-182214'
+        rdir = 'scp_240604-013023'
+        rdir = 'scp_240604-021019'
+        rdir = 'scp_240604-091225'
         s, u, env = pp.deserialize_sim(rdir)
         pfig = pp.plot_states(env, s, u, mode='strided', step_count=5)
         pfig.savefig(os.path.join(rdir,'slices.png'))
@@ -173,6 +191,9 @@ class MyTestCase2(unittest.TestCase):
         rdir = 'scp_240603-180508'
         rdir = 'scp_240603-181411'
         rdir = 'scp_240603-182214'
+        rdir = 'scp_240604-013023'
+        rdir = 'scp_240604-021019'
+        rdir = 'scp_240604-091225'
         pfig = time_plots(rdir)
         pfig.savefig(os.path.join(rdir, 'time.png'))
 
@@ -184,7 +205,7 @@ class MyTestCase2(unittest.TestCase):
         e.n = 5
         e.u_mode = pp.ControlMode.Spot
         e.k_w = 0.2
-        e.d_p = 0.3
+        e.d_p = 0.15
         e.T = 10.0 + 2 * e.dt
         se = scp_pest.SCPEnv()
         se.rho = 0.5
@@ -195,11 +216,13 @@ class MyTestCase2(unittest.TestCase):
     def test_fr_anim_scp_spot_fastw_slowdp(self):
         rdir = 'scp_240603-164825'
         rdir = 'scp_240603-183047'
+        rdir = 'scp_240604-094328'
         pp.animate_sim(rdir)
 
     def test_fr_plot_scp_spot_fastw_slowdp(self):
         rdir = 'scp_240603-164825'
         rdir = 'scp_240603-183047'
+        rdir = 'scp_240604-094328'
         s, u, env = pp.deserialize_sim(rdir)
         pfig = pp.plot_states(env, s, u, mode='strided', step_count=5)
         pfig.savefig(os.path.join(rdir,'slices.png'))
@@ -207,6 +230,7 @@ class MyTestCase2(unittest.TestCase):
     def test_fr_time_plots_scp_spot_fastw_slowdp(self):
         rdir = 'scp_240603-164825'
         rdir = 'scp_240603-183047'
+        rdir = 'scp_240604-094328'
         pfig = time_plots(rdir)
         pfig.savefig(os.path.join(rdir, 'time.png'))
 
@@ -216,23 +240,28 @@ class MyTestCase2(unittest.TestCase):
         e.n = 5
         e.u_mode = pp.ControlMode.Spot
         e.k_w = 0.2
-        e.d_p = 0.3
+        e.d_p = 0.15
         e.T = 10 + 2 * e.dt
         se = scp_pest.SCPEnv()
         se.rho = 0.5
         se.P_wt = 1e2
         se.Q_wt = 1e-1
+        se.R_wt = 1e-3
         se.w_wt = 1e-2
         scp_pest.do_scp(e, se)
 
     def test_fr_anim_scp_spot_fastw_slowdp_flipped(self):
         rdir = 'scp_240603-165736'
         rdir = 'scp_240603-183633'
+        rdir = 'scp_240604-021505'
+        rdir = 'scp_240604-085334'
         pp.animate_sim(rdir)
 
     def test_fr_plot_scp_spot_fastw_slowdp_flipped(self):
         rdir = 'scp_240603-165736'
         rdir = 'scp_240603-183633'
+        rdir = 'scp_240604-021505'
+        rdir = 'scp_240604-085334'
         s, u, env = pp.deserialize_sim(rdir)
         pfig = pp.plot_states(env, s, u, mode='strided', step_count=5)
         pfig.savefig(os.path.join(rdir,'slices.png'))
@@ -240,24 +269,54 @@ class MyTestCase2(unittest.TestCase):
     def test_fr_time_plots_scp_spot_fastw_slowdp_flipped(self):
         rdir = 'scp_240603-165736'
         rdir = 'scp_240603-183633'
+        rdir = 'scp_240604-021505'
+        rdir = 'scp_240604-085334'
         pfig = time_plots(rdir)
         pfig.savefig(os.path.join(rdir, 'time.png'))
 
     def test_collect_final_data(self):
+        # note the no-pesticide ref is:
+        # rdir = 'sim_240604-091905'
         # collect final raw and yield-adjusted tables
-        # aerial
-        rdir = 'scp_240603-181903'
+        rdir = 'scp_240604-094914'
         collect_data(rdir, "aerial, Q heavy")
         # aerial, N heavy
-        rdir = 'scp_240603-182214'
+        rdir = 'scp_240604-091225'
         collect_data(rdir, "aerial, P heavy")
         # spot
-        rdir = 'scp_240603-183047'
+        rdir = 'scp_240604-094328'
         collect_data(rdir, "spot, Q heavy")
         # spot, N heavy
-        rdir = 'scp_240603-183633'
+        rdir = 'scp_240604-085334'
         collect_data(rdir, "spot, P heavy")
 
+        # archaeology
+        # # aerial
+        # rdir = 'scp_240603-181903'
+        # collect_data(rdir, "aerial, Q heavy")
+        # rdir = 'scp_240604-011359'
+        # collect_data(rdir, "aerial, Q heavy 2")
+        # # aerial, N heavy
+        # rdir = 'scp_240603-182214'
+        # collect_data(rdir, "aerial, P heavy")
+        # rdir = 'scp_240604-013023'
+        # collect_data(rdir, "aerial, P heavy 2")
+        # rdir = 'scp_240604-021019'
+        # collect_data(rdir, "aerial, P heavy 3")
+        # rdir = 'scp_240604-021019'
+        # collect_data(rdir, "aerial, P heavy 3")
+        # rdir = 'scp_240604-091225'
+        # collect_data(rdir, "aerial, P heavy 4")
+        # # spot
+        # rdir = 'scp_240603-183047'
+        # collect_data(rdir, "spot, Q heavy")
+        # # spot, N heavy
+        # rdir = 'scp_240603-183633'
+        # collect_data(rdir, "spot, P heavy")
+        # rdir = 'scp_240604-021505'
+        # collect_data(rdir, "spot, P heavy 2")
+        # rdir = 'scp_240604-085334'
+        # collect_data(rdir, "spot, P heavy 3")
 
 if __name__ == '__main__':
     unittest.main()
