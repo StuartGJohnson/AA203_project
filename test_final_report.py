@@ -74,8 +74,9 @@ def collect_data(rdir, annot):
     wsum = np.sum(w, axis=1)
     ucumsum = env.dt * np.cumsum(np.sum(u, axis=1))
     print(annot)
-    print(f"raw: {csum[-1]:.2f}, {psum[-1]:.2f}, {wsum[-1]:.2f}, {ucumsum[-1]:.2f}")
-    print(f"norm: {csum[-1]/csum[-1]:.2f}, {psum[-1]/csum[-1]:.2f}, {wsum[-1]/csum[-1]:.2f}, {ucumsum[-1]/csum[-1]:.2f}")
+    # the ampersands are for a latex table!
+    print(f"raw: {csum[-1]:.2f} & {psum[-1]:.2f} & {wsum[-1]:.2f} & {ucumsum[-1]:.2f}")
+    print(f"norm: {csum[-1]/csum[-1]:.2f} & {psum[-1]/csum[-1]:.2f} & {wsum[-1]/csum[-1]:.2f} & {ucumsum[-1]/csum[-1]:.2f}")
 
 class MyTestCase2(unittest.TestCase):
     def test_fr_sim_no_control(self):
