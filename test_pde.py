@@ -8,8 +8,10 @@ import inspect
 import typing
 
 class MyTestCase(unittest.TestCase):
-    def test_pde_mat(self):
-        tmp = pp.build_fd_lap_matrix(5, pp.BC.Dirichlet)
+    def test_sim(self):
+        e = pp.Env()
+        e.bc = pp.B
+        tmp = pp.build_fd_lap_matrix(e)
         plt.figure()
         plt.imshow(tmp)
         plt.colorbar()
@@ -17,7 +19,9 @@ class MyTestCase(unittest.TestCase):
         #self.assertEqual(True, False)  # add assertion here
 
     def test_pde_mat2(self):
-        tmp = pp.build_fd_lap_matrix(5, pp.BC.Neumann)
+        e = pp.Env()
+        e.bc = pp.BC.Neumann
+        tmp = pp.build_fd_lap_matrix(e)
         plt.figure()
         plt.imshow(tmp)
         plt.colorbar()
@@ -110,37 +114,6 @@ class MyTestCase(unittest.TestCase):
         s, u = ps.simulate()
         pp.serialize_sim(s, u, ps)
 
-    def test_deserialize(self):
-        rdir = 'sim_240525-135920'
-        s, u, sim_env = pp.deserialize_sim(rdir)
-        print(sim_env)
-
-    def test_animate_simulate(self):
-        rdir = 'sim_240525-135920'
-        pp.animate_sim(rdir)
-
-    def test_deserialize2(self):
-        rdir = 'sim_240525-135940'
-        s, u, sim_env = pp.deserialize_sim(rdir)
-        print(sim_env)
-
-    def test_animate_simulate2(self):
-        rdir = 'sim_240525-135940'
-        pp.animate_sim(rdir)
-
-    def test_deserialize3(self):
-        rdir = 'sim_240525-143439'
-        s, u, sim_env = pp.deserialize_sim(rdir)
-        print(sim_env)
-
-    def test_animate_simulate3(self):
-        rdir = 'sim_240525-143439'
-        pp.animate_sim(rdir)
-
-    def test_animate_simulate4(self):
-        rdir = 'sim_240525-143901'
-        pp.animate_sim(rdir)
-
     def test_simulate2(self):
         e = pp.Env()
         e.u_mode = pp.ControlMode.Aerial
@@ -231,125 +204,14 @@ class MyTestCase(unittest.TestCase):
         se = scp_pest.SCPEnv()
         scp_pest.do_scp(e, se)
 
-    def test_resim_scp(self):
-        # run scp initial state and control back
-        # through the high fidelity sim
-        #rdir = 'scp_240526-160731'
-        rdir = 'scp_240526-160118'
-        s, u, env = pp.deserialize_sim(rdir)
-        ps = pp.PestSim(env)
-        s_out, u_out = ps.resimulate(s, u)
-        rdir_out = rdir.replace('scp', 'resim')
-        pp.serialize_sim(s_out, u_out, ps, override_dir=rdir_out)
-
     def test_strrep(self):
         rdir = 'scp_240526-160731'
         rdir2 = rdir.replace('scp', 'resim')
         print(rdir2)
 
-    def test_animate_scp(self):
-        #rdir = 'scp_240525-223941'
-        #rdir = 'scp_240526-104304'
-        #rdir = 'scp_240526-111421'
-        rdir = 'scp_240526-121034'
-        pp.animate_sim(rdir)
-
     def test_numpy_quick(self):
         t = np.diag([1,2,3,4])
         print(t)
-
-    def test_plot_scp_xxx(self):
-        #rdir = 'scp_240525-230011'
-        #rdir = 'scp_240525-235048'
-        #rdir = 'scp_240526-000742'
-        #rdir = 'scp_240526-001527'
-        #rdir = 'scp_240526-104304'
-        #rdir = 'scp_240526-110830'
-        #rdir = 'scp_240526-111421'
-        #rdir = 'scp_240526-113023'
-        #rdir = 'scp_240526-121034'
-        #rdir = 'scp_240526-122752'
-        #rdir = 'scp_240526-124526'
-        #rdir = 'scp_240526-130010'
-        #rdir = 'scp_240526-142214'
-        #rdir = 'scp_240526-145809'
-        #rdir = 'scp_240526-150344'
-        #rdir = 'scp_240526-152845'
-        #rdir = 'scp_240526-160118'
-        #rdir = 'scp_240526-160731'
-        #rdir = 'resim_240526-160731'
-        #rdir = 'resim_240526-160118'
-        #rdir = 'scp_240527-113133'
-        #rdir = 'scp_240527-121309'
-        rdir = 'scp_240529-151517'
-        s, u, env = pp.deserialize_sim(rdir)
-        plt.figure()
-        plt.plot(np.sum(u, axis=1))
-        plt.title('sum u')
-        plt.show()
-        plt.figure()
-        plt.plot(np.cumsum(np.sum(u, axis=1)))
-        plt.title('cumulative u')
-        plt.show()
-        plt.figure()
-        plt.plot(np.median(u, axis=1), c='b')
-        plt.plot(np.min(u, axis=1), c='g')
-        plt.plot(np.max(u, axis=1), c='r')
-        plt.title('stats u')
-        plt.show()
-        c,p,w = np.split(s,3, axis=1)
-        plt.figure()
-        plt.plot(np.median(c, axis=1))
-        plt.axhline(y=0.73, color='r', linestyle='--')
-        plt.plot()
-        plt.title('median c')
-        plt.show()
-        plt.plot(np.sum(c, axis=1))
-        plt.axhline(y=0.73*25, color='r', linestyle='--')
-        plt.plot()
-        plt.title('sum c')
-        plt.show()
-        plt.figure()
-        plt.plot(np.sum(p, axis=1))
-        plt.title('sum p')
-        plt.show()
-        plt.figure()
-        plt.plot(np.median(p, axis=1), c='b')
-        plt.plot(np.min(p, axis=1), c='g')
-        plt.plot(np.max(p, axis=1), c='r')
-        plt.title('stats p')
-        plt.show()
-        plt.figure()
-        plt.plot(np.sum(w, axis=1))
-        plt.title('sum w')
-        plt.show()
-        plt.figure()
-        plt.plot(np.median(w, axis=1), c='b')
-        plt.plot(np.min(w, axis=1), c='g')
-        plt.plot(np.max(w, axis=1), c='r')
-        plt.title('stats w')
-        plt.show()
-
-    def test_plot_scp(self):
-        e = pp.Env()
-        e.n = 5
-        s = np.load('scp_n5/scp_pest_s.npy')
-        u = np.load('scp_n5/scp_pest_u.npy')
-        pp.plot_states(e, s, u)
-
-    def test_plot_scp2(self):
-        e = pp.Env()
-        e.n = 5
-        s = np.load('scp_n5_linux1/scp_pest_s.npy')
-        u = np.load('scp_n5_linux1/scp_pest_u.npy')
-        pp.plot_states(e, s, u)
-
-    def test_plot_scpx(self):
-        e = pp.Env()
-        e.n = 5
-        s = np.load('scp_240517-182839/scp_pest_s.npy')
-        u = np.load('scp_240517-182839/scp_pest_u.npy')
-        pp.plot_states(e, s, u)
 
     def test_plot_scp3(self):
         e = pp.Env()
@@ -405,6 +267,7 @@ class MyTestCase(unittest.TestCase):
         file_env = os.path.join('scp.env.json')
         with io.open(file_env, 'w', encoding='utf-8') as f:
             f.write(json.dumps(jsons.dump(e), ensure_ascii=False))
+
 
 if __name__ == '__main__':
     unittest.main()

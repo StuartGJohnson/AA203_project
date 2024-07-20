@@ -1,5 +1,5 @@
 """ numpy pde implementation. Follows the py-pde implementation closely. """
-
+import equinox.internal
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
@@ -30,7 +30,8 @@ class ControlMode(StrEnum):
 
 @dataclass
 class Env:
-    n: int = 5
+    D: float = 4  # km
+    n: int = 5 # so, 1km x 1km grid spacing (see D)
     k_cp: float = 0.2
     k_pw: float = 0.3
     k_pc: float = 0.2
@@ -43,35 +44,35 @@ class Env:
     c0: float = 0.5
     w0: float = 0.0
     u0: float = 0.0
-    flux: float = 0.1 # amplitude of flux bc
-    flux_source_dist: float = 1 # in multiples of e.n
+    flux: float = 0.1  # amplitude of flux bc
+    flux_source_dist: float = 1 # in same units as D (km)
     flux_source_angle_rad: float = -np.pi/4
-    pulse: float = 0.0 # amplitude of central pulse
+    pulse: float = 0.0  # amplitude of central pulse
     u_mode: ControlMode = ControlMode.Spot
+    spot_resolution: int = 1 # grid points per control "spot"
     dt: float = 0.1
-    T: float = 30.0
+    T: float = 10.0
 
+    def __post_init__(self):
+        if self.u_mode == 'Aerial':
+            self.u_mode = ControlMode.Aerial
+        if self.u_mode == 'Spot':
+            self.u_mode = ControlMode.Spot
+        if self.bc == 'Neumann':
+            self.bc = BC.Neumann
+        if self.bc == 'Dirichlet':
+            self.bc = BC.Dirichlet
 
-def patch_env(e: Env) -> Env:
-    """ Yeah, I don't like this either."""
-    if not hasattr(e, 'T'):
-        e.T = 10.0
-    if not hasattr(e, 'dt'):
-        e.dt = 0.1
-    # this should be done with json thing of some sort
-    # why doesn't this little crap work?
-    if e.u_mode == 'Aerial':
-        e.u_mode = ControlMode.Aerial
-    if e.u_mode == 'Spot':
-        e.u_mode = ControlMode.Spot
-    if e.bc == 'Neumann':
-        e.bc = BC.Neumann
-    if e.bc == 'Dirichlet':
-        e.bc = BC.Dirichlet
-    return e
+def get_T(env: Env):
+    """ bump time for certain plotting purposes (so the last time point is sampled)."""
+    return env.T + 2*env.dt
 
-
-def build_fd_lap_matrix(n, bc: BC):
+def build_fd_lap_matrix(e: Env):
+    n = e.n
+    bc = e.bc
+    # the spatial discretization
+    h = e.D / (e.n - 1)
+    h2 = h * h
     if bc == BC.Dirichlet:
         """ build a homogeneous Dirichlet BC Laplacian fd matrix for a square domain of size nxn. This
          array is of size n^2 x n^2."""
@@ -89,7 +90,7 @@ def build_fd_lap_matrix(n, bc: BC):
             fd_mat[i+n:i+2*n, i:i+n] = i_mat
         for i in range(n,n*(n-1)-n,n):
             fd_mat[i:i+n, i+n:i+2*n] = i_mat
-        return fd_mat
+        return fd_mat / h2
     elif bc == BC.Neumann:
         """ build a Neumann BC Laplacian fd matrix for a square domain of size nxn. This
          array is of size n^2 x n^2."""
@@ -113,7 +114,7 @@ def build_fd_lap_matrix(n, bc: BC):
             fd_mat[i+n:i+2*n, i:i+n] = i_mat
         for i in range(0,n*(n-1),n):
             fd_mat[i:i+n, i+n:i+2*n] = i_mat
-        return fd_mat
+        return fd_mat / h2
     else:
         raise ValueError("bc must be either Dirichlet or Neumann.")
 
@@ -126,17 +127,36 @@ def build_p_mask(n):
     return p_mask
 
 def build_u_pattern(e):
-    """control pattern for aerial spraying."""
-    # will leave this in image space for possible future tweaking (in image space)
-    u_pat = np.ones((e.n, e.n))
-    u_pat = np.reshape(u_pat, (e.n**2,))
+    """control pattern for underactuated control (aerial or lower resolution spraying)"""
+    if e.u_mode == 'Aerial':
+        u_pat = np.ones((e.n, e.n))
+        u_pat = np.reshape(u_pat, (e.n**2,))
+        return u_pat
+    # for loop over components of matrix
+    if e.spot_resolution == 1:
+        # we don't need this thing
+        return []
+    if np.remainder(e.n, e.spot_resolution) != 0:
+        raise ValueError("spot_resolution is not an integer factor of grid size!")
+    n_u = int(e.n / e.spot_resolution)
+    u_pat = np.zeros((e.n**2, n_u**2))
+    u_col = 0
+    for i in range(0, n_u):
+        for j in range(0, n_u):
+            tmp = np.zeros(shape=(n_u, n_u))
+            tmp[i, j] = 1
+            tmp_row1 = tmp.repeat(e.spot_resolution, axis=0).repeat(e.spot_resolution, axis=1)
+            u_pat[:, u_col] = np.reshape(tmp_row1, (e.n**2,))
+            u_col += 1
     return u_pat
 
 def build_flux_matrix(e: Env):
     # flux BC
-    source_pos = e.flux_source_dist * e.n * np.array([np.cos(e.flux_source_angle_rad),np.sin(e.flux_source_angle_rad)])
-    ctr = np.array([(e.n-1)/2, (e.n-1)/2])
-    bposx, bposy = np.meshgrid(np.arange(0,e.n), np.arange(0,e.n))
+    # the spatial discretization
+    h = e.D / (e.n - 1)
+    source_pos = e.flux_source_dist * np.array([np.cos(e.flux_source_angle_rad),np.sin(e.flux_source_angle_rad)])
+    ctr = h * np.array([(e.n-1)/2, (e.n-1)/2])
+    bposx, bposy = np.meshgrid(h * np.arange(0,e.n), h * np.arange(0,e.n))
     bdiffx = np.abs(bposx - ctr[0] - source_pos[0])
     bdiffy = np.abs(bposy - ctr[1] - source_pos[1])
     bdist = bdiffx*bdiffx + bdiffy*bdiffy
@@ -144,7 +164,20 @@ def build_flux_matrix(e: Env):
     b = np.zeros((e.n-2, e.n-2), dtype=float)
     b = np.pad(b, 1, 'constant', constant_values=1.0)
     b *= flux_pattern
-    b *= e.flux / np.max(b)
+    # note the flux varies with the length of the boundary
+    b *= e.flux / h / np.max(b)
+    b = np.reshape(b, (e.n ** 2,))
+    return b
+
+
+def build_area_matrix(e: Env):
+    # compensate for partial cells at the domain boundaries
+    b = np.ones((e.n-2, e.n-2), dtype=float)
+    b = np.pad(b, 1, 'constant', constant_values=0.5)
+    b[0, 0] = 0.25
+    b[0, -1] = 0.25
+    b[-1, 0] = 0.25
+    b[-1, -1] = 0.25
     b = np.reshape(b, (e.n ** 2,))
     return b
 
@@ -308,7 +341,11 @@ def plot_states(e, s_rec, u_rec, mode='strided', step_count=10):
         c = np.reshape(ca[k],(e.n,e.n))
         p = np.reshape(pa[k],(e.n,e.n))
         w = np.reshape(wa[k],(e.n,e.n))
-        u = np.reshape(u,(e.n,e.n))
+        # u can be different sizes if not reconstituted in deserialization
+        if u.size == 1:
+            u = np.reshape(u * np.ones((e.n, e.n), dtype=float), (e.n, e.n))
+        else:
+            u = np.reshape(u, (e.n, e.n))
         plt.subplot(numplots, 4, kint*4+1)
         plt.imshow(c, origin='lower',vmin=0, vmax=cmax)
         if k == 0:
@@ -333,7 +370,7 @@ def plot_states(e, s_rec, u_rec, mode='strided', step_count=10):
             plt.title('u')
         plt.axis('off')
         kint += 1
-        print([np.min(c), np.max(c), np.min(p), np.max(p), np.min(w), np.max(w), np.min(u), np.max(u)])
+        #print([np.min(c), np.max(c), np.min(p), np.max(p), np.min(w), np.max(w), np.min(u), np.max(u)])
     plt.show()
     return pfig
 
@@ -341,7 +378,7 @@ def plot_states(e, s_rec, u_rec, mode='strided', step_count=10):
 class PestSim:
     def __init__(self, e: Env):
         self.e = e
-        self.L = build_fd_lap_matrix(e.n, e.bc)
+        self.L = build_fd_lap_matrix(e)
         self.Ljax = jnp.array(self.L)
         self.u_pattern = build_u_pattern(e)
         self.b = build_flux_matrix(e)
@@ -361,7 +398,7 @@ class PestSim:
 
     def simulate(self):
         s_init, u_init = init_state(self.e)
-        t = np.arange(0.0, self.e.T, self.e.dt)
+        t = np.arange(0.0, get_T(self.e), self.e.dt)
         num_timesteps = len(t)
         if self.e.u_mode == ControlMode.Aerial:
             m_sim = 1
@@ -388,7 +425,7 @@ class PestSim:
     def resimulate(self, s_ref, u):
         """ reprocess scp (or sim!) output into a high fidelity state sequence"""
         #s_init, u_init = init_state(self.e)
-        t = np.arange(0.0, self.e.T, self.e.dt)
+        t = np.arange(0.0, get_T(self.e), self.e.dt)
         num_timesteps = len(t)
         u_vec=[]
         if self.e.u_mode == ControlMode.Aerial:
@@ -417,7 +454,7 @@ class PestSim:
             np.save('pest_u.npy', u)
 
 
-def serialize_sim(s: np.ndarray, u: np.ndarray, sim: PestSim, override_dir: str = ''):
+def serialize_sim(s: np.ndarray, u: np.ndarray, sim: PestSim, override_dir: str = '') -> str:
     if override_dir == '':
         now = datetime.datetime.now()
         rdir = 'sim_' + now.strftime('%y%m%d-%H%M%S')
@@ -440,6 +477,7 @@ def serialize_sim(s: np.ndarray, u: np.ndarray, sim: PestSim, override_dir: str 
     # file_do = os.path.join(rdir, 'do_scp.txt')
     # with io.open(file_do, 'w', encoding='utf-8') as f:
     #     f.write(inspect.getsource(do_scp))
+    return rdir
 
 
 def deserialize_sim(rdir: str) -> (np.ndarray, np.ndarray, Env):
@@ -455,11 +493,9 @@ def deserialize_sim(rdir: str) -> (np.ndarray, np.ndarray, Env):
     file_env = os.path.join(rdir, 'pest_pde.env.json')
     with io.open(file_env, 'r', encoding='utf-8') as f:
         env_dict = json.load(f)
-    env = make_dataclass("Env", env_dict)(**env_dict)
-    tmp = patch_env(env)
-    env = Env(**asdict(tmp))
-
+    env = Env(**env_dict)
     return s, u, env
+
 
 def animate_sim(rdir: str):
     s, u, e = deserialize_sim(rdir)
