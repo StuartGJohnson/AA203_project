@@ -1,0 +1,14 @@
+numpy~=1.26.4
+scipy~=1.11.4
+cvxpy~=1.5.1
+matplotlib~=3.9.0
+jax~=0.4.28
+jaxlib
+tqdm~=4.66.4
+hj-reachability
+py-pde
+plotly~=5.22.0
+jsons~=1.6.3
+equinox~=0.11.4
+opencv-python~=4.9.0.80
+pandas~=2.2.2
