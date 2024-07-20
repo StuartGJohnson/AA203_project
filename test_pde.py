@@ -10,7 +10,7 @@ import typing
 class MyTestCase(unittest.TestCase):
     def test_sim(self):
         e = pp.Env()
-        e.bc = pp.B
+        e.bc = pp.BC.Dirichlet
         tmp = pp.build_fd_lap_matrix(e)
         plt.figure()
         plt.imshow(tmp)
