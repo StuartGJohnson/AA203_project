@@ -89,46 +89,18 @@ class MyTestCase(unittest.TestCase):
         e = pp.Env()
         ps = pp.PestSim(e)
         s, u = ps.simulate()
-        pp.serialize_sim(s, u, ps)
-
-    def test_simulate2(self):
-        e = pp.Env()
-        e.u_mode = pp.ControlMode.Aerial
-        ps = pp.PestSim(e)
-        s, u = ps.simulate()
-        pp.serialize_sim(s, u, ps)
-
-    def test_simulate3(self):
-        e = pp.Env()
-        e.u_mode = pp.ControlMode.Aerial
-        e.u0 = .05
-        ps = pp.PestSim(e)
-        s, u = ps.simulate()
-        pp.serialize_sim(s, u, ps)
-
-    def test_simulate4(self):
-        e = pp.Env()
-        e.u_mode = pp.ControlMode.Spot
-        e.u0 = .05
-        ps = pp.PestSim(e)
-        s, u = ps.simulate()
-        pp.serialize_sim(s, u, ps)
-
-    def test_simulate2(self):
-        e = pp.Env()
-        e.u_mode = pp.ControlMode.Aerial
-        #e.bc = pp.BC.Neumann
-        ps = pp.PestSim(e)
-        s, u = ps.simulate()
+        ps.save_simulation(s, u)
         pp.serialize_sim(s, u, ps)
 
     def test_plot_simulate(self):
+        # run after test_simulate
         e = pp.Env()
         s = np.load('pest_s.npy')
         u = np.load('pest_u.npy')
         pp.plot_states(e, s, u)
 
     def test_plot_simulate_pests(self):
+        # run after test_simulate
         e = pp.Env()
         s = np.load('pest_s.npy')
         #u = np.load('pest_u.npy')
@@ -140,21 +112,13 @@ class MyTestCase(unittest.TestCase):
 
     def test_pmask(self):
         e = pp.Env()
+        e.bc = pp.BC.Dirichlet
         pm = pp.build_p_mask(e.n)
         print(pm)
-        L = pp.build_fd_lap_matrix(e.n, pp.BC.Dirichlet)
+        L = pp.build_fd_lap_matrix(e)
         # this should be zero
         print(L@(pm-1))
-
-    def test_np_thing(self):
-        tmp = np.eye(1)
-        print(tmp)
-
-    def test_np_crap(self):
-        tmp = np.ones((10,1))
-        m = np.eye(1)
-        x = tmp[3].T @ m @ tmp[3]
-        print(x)
+        self.assertTrue(np.array_equal(L@(pm-1), np.zeros(pm.shape)))
 
     def test_scp_aerial(self):
         e = pp.Env()
@@ -163,44 +127,10 @@ class MyTestCase(unittest.TestCase):
         se = scp_pest.SCPEnv()
         scp_pest.do_scp(e, se)
 
-    def test_scp_aerial_fastw(self):
-        e = pp.Env()
-        e.n = 5
-        e.u_mode = pp.ControlMode.Aerial
-        e.k_w = 0.2
-        se = scp_pest.SCPEnv()
-        scp_pest.do_scp(e, se)
-
     def test_scp_spot(self):
         e = pp.Env()
         e.n = 5
         e.u_mode = pp.ControlMode.Spot
-        se = scp_pest.SCPEnv()
-        scp_pest.do_scp(e, se)
-
-    def test_scp_spot_fastw(self):
-        e = pp.Env()
-        e.n = 5
-        e.u_mode = pp.ControlMode.Spot
-        e.k_w = 0.2
-        se = scp_pest.SCPEnv()
-        scp_pest.do_scp(e, se)
-
-    def test_scp_spot_fastw_slowdp(self):
-        e = pp.Env()
-        e.n = 5
-        e.u_mode = pp.ControlMode.Spot
-        e.k_w = 0.2
-        e.d_p = 0.3
-        se = scp_pest.SCPEnv()
-        scp_pest.do_scp(e, se)
-
-    def test_scp_aerial_fastw_slowdp(self):
-        e = pp.Env()
-        e.n = 5
-        e.u_mode = pp.ControlMode.Aerial
-        e.k_w = 0.2
-        e.d_p = 0.3
         se = scp_pest.SCPEnv()
         scp_pest.do_scp(e, se)
 
@@ -212,13 +142,6 @@ class MyTestCase(unittest.TestCase):
     def test_numpy_quick(self):
         t = np.diag([1,2,3,4])
         print(t)
-
-    def test_plot_scp3(self):
-        e = pp.Env()
-        e.n = 7
-        s = np.load('scp_pest_s.npy')
-        u = np.load('scp_pest_u.npy')
-        pp.plot_states(e, s, u)
 
     def test_plot_scp_report(self):
         e = pp.Env()

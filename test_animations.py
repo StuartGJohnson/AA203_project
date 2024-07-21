@@ -32,11 +32,10 @@ class animated_class():
         return self.scat, self.line2
 
 class MyTestCase(unittest.TestCase):
-    def test_something(self):
+    def test_animation(self):
         ac = animated_class()
         ani = animation.FuncAnimation(fig=ac.fig, func=ac.update, frames=40, interval=30)
         ani.save(filename="ffmpeg_example.mp4", writer="ffmpeg")
-        #self.assertEqual(True, False)  # add assertion here
 
 if __name__ == '__main__':
     unittest.main()
