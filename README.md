@@ -6,3 +6,6 @@ This report is slightly modified in that the code was originally included in the
 Follow-up work on this project is documented in: [Follow-up course report](/reports/post_final.pdf)
 The code supporting these reports is contained in this repo and described below.
 </p>
+
+[Course report](/reports/final.pdf)
+[Follow-up course report](/reports/post_final.pdf)
