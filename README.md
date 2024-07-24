@@ -67,3 +67,4 @@ A short presentation video and slides were generated for the class. These are:
 
 [Slides](Optimal%20Control%20and%20Pesticides.pptx)
 
+Note these do not reflect work done on SCP convergence after the class completed.
