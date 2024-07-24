@@ -50,4 +50,6 @@ SCP run directories are named as scp_YYMMDD-HHMMSS, PDE simulations are named as
 9. `pest_utils.py` : core source code - utilities.
 10. `test_scp.py / test_scp.py` : various unit tests and tests by plotting of the relevant source code.
 
+## Some fun movies
 
+Check out: [Movie of spot control](/resim_240718-012904/pest.mp4)
