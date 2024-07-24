@@ -12,6 +12,7 @@ from enum import Enum, StrEnum
 import os
 import inspect
 import datetime
+from time import sleep
 import io, json, jsons
 
 import jax
@@ -456,6 +457,7 @@ class PestSim:
 
 def serialize_sim(s: np.ndarray, u: np.ndarray, sim: PestSim, override_dir: str = '') -> str:
     if override_dir == '':
+        sleep(1.1)  # I only have HHMMSS, so ...
         now = datetime.datetime.now()
         rdir = 'sim_' + now.strftime('%y%m%d-%H%M%S')
     else:

@@ -113,7 +113,7 @@ class MyTestCase(unittest.TestCase):
         e.u_mode = pp.ControlMode.Spot
         e.k_w = 0.2
         #e.d_p = 0.15
-        e.d_p = 0.25
+        e.d_p = 0.2
         sim_dirs = []
         err_table = []
         err_tablec = []

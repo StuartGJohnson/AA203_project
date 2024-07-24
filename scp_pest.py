@@ -20,7 +20,7 @@ import datetime
 import io, json, jsons
 from dataclasses import dataclass, make_dataclass, asdict
 from enum import Enum, StrEnum
-from time import perf_counter
+from time import perf_counter, sleep
 import cv2
 
 
@@ -634,6 +634,7 @@ def scp_iteration2(se: SCPEnv, f, s0, s_goal, s_prev, u_prev, N, P, Q, R, u_max,
 
 
 def serialize_scp_run(s: np.ndarray, u: np.ndarray, J: np.ndarray, sim: pest_pde.PestSim, scp_env: SCPEnv) -> str:
+    sleep(1.1)  # I only have HHMMSS, so ...
     now = datetime.datetime.now()
     rdir = 'scp_' + now.strftime('%y%m%d-%H%M%S')
     os.makedirs(rdir, exist_ok=True)
@@ -668,6 +669,7 @@ def serialize_scp_run_plus(s: np.ndarray, u: np.ndarray, J: np.ndarray, J_ref: n
                            rho: np.ndarray, scp_time: np.ndarray, sim: pest_pde.PestSim, scp_env: SCPEnv,
                            n_spatial: np.ndarray = None, iter_count: np.ndarray = None,
                            outer_rel_error: np.ndarray = None) -> str:
+    sleep(1.1) # I only have HHMMSS
     now = datetime.datetime.now()
     rdir = 'scp_' + now.strftime('%y%m%d-%H%M%S')
     os.makedirs(rdir, exist_ok=True)
