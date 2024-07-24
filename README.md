@@ -52,4 +52,8 @@ SCP run directories are named as scp_YYMMDD-HHMMSS, PDE simulations are named as
 
 ## Some fun movies
 
+These are at the "fast" pest diffusion setting (0.4). See [Follow-up course report](/reports/post_final.pdf) for more detail.
+
+Check out: [Movie of aerial control](/resim_240718-005456/pest.mp4)
+
 Check out: [Movie of spot control](/resim_240718-012904/pest.mp4)
