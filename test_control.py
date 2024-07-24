@@ -201,30 +201,40 @@ class MyTestCase2(unittest.TestCase):
         run_scp_plus_plus(se, 0.15, pp.ControlMode.Spot, 'test_control_spot_plus_plus_4.json')
 
     def test_collect_table_data(self):
-        rdir = pu.read_json_report('test_control_aerial_plus_plus_3.json')[0]
+        rdir = pu.read_json_report('test_control_aerial_plus_plus_3.json')[1]
         pu.collect_data(rdir, "aerial, dp=0.05")
-        rdir = pu.read_json_report('test_control_spot_plus_plus_3.json')[0]
+        rdir = pu.read_json_report('test_control_spot_plus_plus_3.json')[1]
         pu.collect_data(rdir, "spot, dp=0.05")
 
-        rdir = pu.read_json_report('test_control_aerial_plus_plus_0.json')[0]
+        rdir = pu.read_json_report('test_control_aerial_plus_plus_0.json')[1]
         pu.collect_data(rdir, "aerial, dp=0.1")
-        rdir = pu.read_json_report('test_control_spot_plus_plus_0.json')[0]
+        rdir = pu.read_json_report('test_control_spot_plus_plus_0.json')[1]
         pu.collect_data(rdir, "spot, dp=0.1")
 
-        rdir = pu.read_json_report('test_control_aerial_plus_plus_4.json')[0]
+        rdir = pu.read_json_report('test_control_aerial_plus_plus_4.json')[1]
         pu.collect_data(rdir, "aerial, dp=0.15")
-        rdir = pu.read_json_report('test_control_spot_plus_plus_4.json')[0]
+        rdir = pu.read_json_report('test_control_spot_plus_plus_4.json')[1]
         pu.collect_data(rdir, "spot, dp=0.15")
 
-        rdir = pu.read_json_report('test_control_aerial_plus_plus_1.json')[0]
+        rdir = pu.read_json_report('test_control_aerial_plus_plus_1.json')[1]
         pu.collect_data(rdir, "aerial, dp=0.25")
-        rdir = pu.read_json_report('test_control_spot_plus_plus_1.json')[0]
+        rdir = pu.read_json_report('test_control_spot_plus_plus_1.json')[1]
         pu.collect_data(rdir, "spot, dp=0.25")
 
-        rdir = pu.read_json_report('test_control_aerial_plus_plus_2.json')[0]
+        rdir = pu.read_json_report('test_control_aerial_plus_plus_2.json')[1]
         pu.collect_data(rdir, "aerial, dp=0.4")
-        rdir = pu.read_json_report('test_control_spot_plus_plus_2.json')[0]
+        rdir = pu.read_json_report('test_control_spot_plus_plus_2.json')[1]
         pu.collect_data(rdir, "spot, dp=0.4")
+
+    def test_collect_run_times(self):
+        rdir = pu.read_json_report('test_control_aerial_plus_plus_3.json')[0]
+        pu.collect_run_time(rdir, "aerial, dp=0.05")
+        rdir = pu.read_json_report('test_control_spot_plus_plus_3.json')[0]
+        pu.collect_run_time(rdir, "spot, dp=0.05")
+        rdir = pu.read_json_report('test_control_aerial_plus_plus_2.json')[0]
+        pu.collect_run_time(rdir, "aerial, dp=0.4")
+        rdir = pu.read_json_report('test_control_spot_plus_plus_2.json')[0]
+        pu.collect_run_time(rdir, "spot, dp=0.4")
 
 if __name__ == '__main__':
     unittest.main()

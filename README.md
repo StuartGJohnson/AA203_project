@@ -1,10 +1,9 @@
 # AA203_project
 
-The repo is the results of a project completed as part of the Stanford course AA203 : Optimal and Learning-Based Control. The original report from the course is in:
-[Course report](/reports/final.pdf)
+The repo is the result of a project completed as part of the Stanford course AA203 : Optimal and Learning-Based Control. The original report from the course is in: [Course report](/reports/final.pdf)
 This report is slightly modified in that the code was originally included in the document.
 Follow-up work on this project is documented in: [Follow-up course report](/reports/post_final.pdf)
-The code supporting these reports is contained in this repo and described below.
+The code supporting these reports is contained in this repo and is described below.
 
 ## How the code works
 
@@ -46,6 +45,7 @@ SCP run directories are named as scp_YYMMDD-HHMMSS, PDE simulations are named as
 6. `requirements.txt` : the usual source for managing your python environment. This repo was developed/executed on ubuntu 20.04 AND windows 10 with python 3.8, managed via conda and pip.
 7. `scp_pest.py` : core source code for SCP.
 8. `pest_pde.py` : core source code for the PDE involved.
-9. `test_scp.py / test_scp.py` : various unit tests and tests by plotting of the relevant source code.
+9. `pest_utils.py` : core source code - utilities.
+10. `test_scp.py / test_scp.py` : various unit tests and tests by plotting of the relevant source code.
 
 
