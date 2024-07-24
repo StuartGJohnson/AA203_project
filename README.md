@@ -57,3 +57,13 @@ These are at the "fast" pest diffusion setting (0.4). See [Follow-up course repo
 Check out: [Movie of aerial control](/resim_240718-005456/pest.mp4)
 
 Check out: [Movie of spot control](/resim_240718-012904/pest.mp4)
+
+
+## Other class droppings
+
+A short presentation video and slides were generated for the class. These are:
+
+[Video](Optimal%20Control%20and%20Pesticides.mp4)
+
+[Slides](Optimal%20Control%20and%20Pesticides.pptx)
+
