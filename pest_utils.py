@@ -133,16 +133,17 @@ def collect_data(rdir, annot):
     csum = h2 * c @ area_mat
     psum = h2 * p @ area_mat
     wsum = h2 * w @ area_mat
-    ucumsum = env.dt * h2 * np.cumsum(np.sum(u, axis=1))
+    ucumsum = env.dt * h2 * np.cumsum(u @ area_mat)
     print(annot)
     print(f"raw: {csum[-1]:.2f}, {psum[-1]:.2f}, {wsum[-1]:.2f}, {ucumsum[-1]:.2f}")
     print(f"norm: {csum[-1]/csum[-1]:.2f}, {psum[-1]/csum[-1]:.2f}, {wsum[-1]/csum[-1]:.2f}, {ucumsum[-1]/csum[-1]:.2f}")
 
 
-
-
-
-
+def collect_run_time(rdir, annot):
+    s, u, env, J, J_ref, dJ_rel, lin_ratio, rho, scp_time, scp_env, n_spatial, iter_count \
+        = scp_pest.deserialize_scp(rdir)
+    print(annot)
+    print(f"cumulative time(secs): {np.sum(scp_time)}")
 
 def compute_pde_error(e_ref: pp.Env, s_ref: np.ndarray, u_ref: np.ndarray, e: pp.Env, s: np.ndarray, u: np.ndarray):
     """compute error in pde approximation"""

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.12) (preloaded format=pdflatex 2024.1.15)  19 JUL 2024 20:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.12) (preloaded format=pdflatex 2024.1.15)  24 JUL 2024 13:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -731,24 +731,24 @@ Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
 (post_final.aux)
 \openout1 = `post_final.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 32.
+LaTeX Font Info:    ... okay on input line 32.
 
 (C:\Users\sjohnson\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf
 .mkii
@@ -775,7 +775,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 s.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 27.
+Package hyperref Info: Link coloring OFF on input line 32.
  (post_final.out) (post_final.out)
 \@outlinefile=\write4
 \openout4 = `post_final.out'.
@@ -785,13 +785,13 @@ Package caption Info: End \AtBeginDocument code.
  [1
 
 {C:/Users/sjohnson/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 46.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 51.
 
 
 (C:\Users\sjohnson\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 46.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 51.
 
 
 (C:\Users\sjohnson\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -800,117 +800,225 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [2] [3]
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 148.
+(caption)                particular \caption on input line 156.
 See the caption package documentation for explanation.
 
-[4] [5]
-<../sim_240604-091905/time.png, id=121, 614.295pt x 361.35pt>
-File: ../sim_240604-091905/time.png Graphic file (type png)
-<use ../sim_240604-091905/time.png>
-Package pdftex.def Info: ../sim_240604-091905/time.png  used on input line 219.
-
-(pdftex.def)             Requested size: 375.80544pt x 221.06277pt.
-
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 220.
-See the caption package documentation for explanation.
-
-
-Overfull \hbox (17.0pt too wide) in paragraph at lines 217--223
-[]$[]$ 
- []
-
-<../scp_240604-091225/time.png, id=123, 614.295pt x 361.35pt>
-File: ../scp_240604-091225/time.png Graphic file (type png)
-<use ../scp_240604-091225/time.png>
-Package pdftex.def Info: ../scp_240604-091225/time.png  used on input line 232.
-
-(pdftex.def)             Requested size: 375.80544pt x 221.06277pt.
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 233.
-See the caption package documentation for explanation.
-
-
-Overfull \hbox (17.0pt too wide) in paragraph at lines 230--236
-[]$[]$ 
- []
-
-[6 <../sim_240604-091905/time.png>]
-<../scp_240604-085334/time.png, id=130, 614.295pt x 361.35pt>
-File: ../scp_240604-085334/time.png Graphic file (type png)
-<use ../scp_240604-085334/time.png>
-Package pdftex.def Info: ../scp_240604-085334/time.png  used on input line 247.
-
-(pdftex.def)             Requested size: 375.80544pt x 221.06277pt.
-
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 248.
-See the caption package documentation for explanation.
-
-
-Overfull \hbox (17.0pt too wide) in paragraph at lines 245--251
-[]$[]$ 
- []
-
-[7 <../scp_240604-091225/time.png> <../scp_240604-085334/time.png>] [8]
-<../sim_240604-091905/slices.png, id=145, 462.528pt x 346.896pt>
-File: ../sim_240604-091905/slices.png Graphic file (type png)
-<use ../sim_240604-091905/slices.png>
-Package pdftex.def Info: ../sim_240604-091905/slices.png  used on input line 31
+[4] [5] [6] [7]
+<../resim_240718-021040/time.png, id=143, 614.295pt x 361.35pt>
+File: ../resim_240718-021040/time.png Graphic file (type png)
+<use ../resim_240718-021040/time.png>
+Package pdftex.def Info: ../resim_240718-021040/time.png  used on input line 29
 1.
+(pdftex.def)             Requested size: 375.80544pt x 221.06277pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 292.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 289--296
+[]$[]$ 
+ []
+
+<../resim_240718-005456/time.png, id=145, 614.295pt x 361.35pt>
+File: ../resim_240718-005456/time.png Graphic file (type png)
+<use ../resim_240718-005456/time.png>
+Package pdftex.def Info: ../resim_240718-005456/time.png  used on input line 29
+9.
+(pdftex.def)             Requested size: 375.80544pt x 221.06277pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 300.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 297--304
+[]$[]$ 
+ []
+
+[8 <../resim_240718-021040/time.png> <../resim_240718-005456/time.png>]
+<../resim_240718-033400/time.png, id=156, 614.295pt x 361.35pt>
+File: ../resim_240718-033400/time.png Graphic file (type png)
+<use ../resim_240718-033400/time.png>
+Package pdftex.def Info: ../resim_240718-033400/time.png  used on input line 31
+6.
+(pdftex.def)             Requested size: 375.80544pt x 221.06277pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 317.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 314--321
+[]$[]$ 
+ []
+
+<../resim_240718-012904/time.png, id=157, 614.295pt x 361.35pt>
+File: ../resim_240718-012904/time.png Graphic file (type png)
+<use ../resim_240718-012904/time.png>
+Package pdftex.def Info: ../resim_240718-012904/time.png  used on input line 32
+4.
+(pdftex.def)             Requested size: 375.80544pt x 221.06277pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 325.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 322--329
+[]$[]$ 
+ []
+
+[9 <../resim_240718-033400/time.png> <../resim_240718-012904/time.png>]
+[10]
+<../resim_240718-021040/slices.png, id=171, 462.528pt x 346.896pt>
+File: ../resim_240718-021040/slices.png Graphic file (type png)
+<use ../resim_240718-021040/slices.png>
+Package pdftex.def Info: ../resim_240718-021040/slices.png  used on input line 
+417.
 (pdftex.def)             Requested size: 375.80544pt x 281.86818pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 312.
+(caption)                particular \caption on input line 418.
 See the caption package documentation for explanation.
 
-[9]
-<../scp_240604-091225/slices.png, id=151, 462.528pt x 346.896pt>
-File: ../scp_240604-091225/slices.png Graphic file (type png)
-<use ../scp_240604-091225/slices.png>
-Package pdftex.def Info: ../scp_240604-091225/slices.png  used on input line 32
-2.
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 415--422
+[]$[]$ 
+ []
+
+[11]
+<../resim_240718-005456/slices.png, id=179, 462.528pt x 346.896pt>
+File: ../resim_240718-005456/slices.png Graphic file (type png)
+<use ../resim_240718-005456/slices.png>
+Package pdftex.def Info: ../resim_240718-005456/slices.png  used on input line 
+425.
 (pdftex.def)             Requested size: 375.80544pt x 281.86818pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 323.
+(caption)                particular \caption on input line 426.
 See the caption package documentation for explanation.
 
-[10 <../sim_240604-091905/slices.png>]
-<../scp_240604-085334/slices.png, id=158, 462.528pt x 346.896pt>
-File: ../scp_240604-085334/slices.png Graphic file (type png)
-<use ../scp_240604-085334/slices.png>
-Package pdftex.def Info: ../scp_240604-085334/slices.png  used on input line 33
-3.
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 423--430
+[]$[]$ 
+ []
+
+[12 <../resim_240718-021040/slices.png>]
+<../resim_240718-033400/slices.png, id=186, 462.528pt x 346.896pt>
+File: ../resim_240718-033400/slices.png Graphic file (type png)
+<use ../resim_240718-033400/slices.png>
+Package pdftex.def Info: ../resim_240718-033400/slices.png  used on input line 
+439.
 (pdftex.def)             Requested size: 375.80544pt x 281.86818pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 334.
+(caption)                particular \caption on input line 440.
 See the caption package documentation for explanation.
 
-[11 <../scp_240604-091225/slices.png>] [12 <../scp_240604-085334/slices.png>]
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 437--444
+[]$[]$ 
+ []
+
+[13 <../resim_240718-005456/slices.png>]
+<../resim_240718-012904/slices.png, id=194, 462.528pt x 346.896pt>
+File: ../resim_240718-012904/slices.png Graphic file (type png)
+<use ../resim_240718-012904/slices.png>
+Package pdftex.def Info: ../resim_240718-012904/slices.png  used on input line 
+447.
+(pdftex.def)             Requested size: 375.80544pt x 281.86818pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 448.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 445--452
+[]$[]$ 
+ []
+
+[14 <../resim_240718-033400/slices.png> <../resim_240718-012904/slices.png>]
+<../scp_240718-021040/scp.png, id=203, 433.62pt x 614.295pt>
+File: ../scp_240718-021040/scp.png Graphic file (type png)
+<use ../scp_240718-021040/scp.png>
+Package pdftex.def Info: ../scp_240718-021040/scp.png  used on input line 485.
+(pdftex.def)             Requested size: 375.80544pt x 532.41705pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 486.
+See the caption package documentation for explanation.
+
+[15]
+<../scp_240718-005456/scp.png, id=208, 433.62pt x 614.295pt>
+File: ../scp_240718-005456/scp.png Graphic file (type png)
+<use ../scp_240718-005456/scp.png>
+Package pdftex.def Info: ../scp_240718-005456/scp.png  used on input line 493.
+(pdftex.def)             Requested size: 375.80544pt x 532.41705pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 494.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 491--498
+[]$[]$ 
+ []
+
+[16 <../scp_240718-021040/scp.png>]
+<../scp_240718-033400/scp.png, id=215, 433.62pt x 614.295pt>
+File: ../scp_240718-033400/scp.png Graphic file (type png)
+<use ../scp_240718-033400/scp.png>
+Package pdftex.def Info: ../scp_240718-033400/scp.png  used on input line 504.
+(pdftex.def)             Requested size: 375.80544pt x 532.41705pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 505.
+See the caption package documentation for explanation.
+
+[17 <../scp_240718-005456/scp.png>]
+<../scp_240718-012904/scp.png, id=222, 433.62pt x 614.295pt>
+File: ../scp_240718-012904/scp.png Graphic file (type png)
+<use ../scp_240718-012904/scp.png>
+Package pdftex.def Info: ../scp_240718-012904/scp.png  used on input line 512.
+(pdftex.def)             Requested size: 375.80544pt x 532.41705pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 513.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 510--517
+[]$[]$ 
+ []
+
+[18 <../scp_240718-033400/scp.png>] [19 <../scp_240718-012904/scp.png>]
 (post_final.aux)
  ***********
 LaTeX2e <2023-11-01>
 L3 programming layer <2024-01-04>
  ***********
 Package rerunfilecheck Info: File `post_final.out' has not changed.
-(rerunfilecheck)             Checksum: D1D20D3212B3BBCDAD3BCBB44513D4F3;2121.
+(rerunfilecheck)             Checksum: 1DA6473669FDCA03D414F3FE7C790667;2519.
  ) 
 Here is how much of TeX's memory you used:
- 22628 strings out of 474485
- 419560 string characters out of 5742318
- 1944528 words of memory out of 5000000
- 44499 multiletter control sequences out of 15000+600000
- 568159 words of font info for 72 fonts, out of 8000000 for 9000
+ 22724 strings out of 474485
+ 421684 string characters out of 5742318
+ 1942528 words of memory out of 5000000
+ 44568 multiletter control sequences out of 15000+600000
+ 572307 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 102i,10n,107p,1052b,566s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 102i,11n,107p,1045b,538s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\sjohnson\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\t
 crm1095.pk><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmbx10.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/t
@@ -918,23 +1026,25 @@ ype1/public/amsfonts/cm/cmbx12.pfb><C:/Users/sjohnson/AppData/Local/Programs/Mi
 KTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/sjohnson/AppData/Local
 /Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/sjohnson/A
 ppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users
-/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pf
+/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pf
 b><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
-cm/cmmib10.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/pub
-lic/amsfonts/cm/cmr10.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/font
-s/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/sjohnson/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/sjohnson/AppData/Loca
-l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/sjohnson/Ap
-pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/s
-johnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb
-><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmsy8.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/amsfonts/cm/cmti10.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/sjohnson/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on post_final.pdf (12 pages, 437345 bytes).
+cm/cmmi8.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/publi
+c/amsfonts/cm/cmmib10.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/font
+s/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/sjohnson/AppData/Local/Programs/
+MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/sjohnson/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/sjohnson/A
+ppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/
+sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb>
+<C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
+/cmsy10.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/amsfonts/cm/cmsy6.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/amsfonts/cm/cmsy8.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiK
+TeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/sjohnson/AppData/Local/
+Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/sjohnson/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on post_final.pdf (19 pages, 787076 bytes).
 PDF statistics:
- 259 PDF objects out of 1000 (max. 8388607)
- 44 named destinations out of 1000 (max. 500000)
- 163 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 335 PDF objects out of 1000 (max. 8388607)
+ 63 named destinations out of 1000 (max. 500000)
+ 201 words of extra memory for PDF output out of 10000 (max. 10000000)
 
