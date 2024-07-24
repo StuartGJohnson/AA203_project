@@ -46,7 +46,7 @@ Papers investigating complex (or otherwise) optimal controls in 2D for agricultu
 \section{Problem Statement}
 Let us suppose we are managing a crop in a square field. This crop is planted and grown for a number of months and then harvested essentially all at once (an example would be corn).
 
-A common approach to modelling ecological problems is the reaction-diffusion (RD) equation. This allows us to model the spatial movement of chemical or biological actors and also model the life cycle and interaction of the same actors. For this project, we adopt a version of the RD equation which only models the pest as obeying spatial diffusion. The RD PDE for our crops is:
+A common approach to modeling ecological problems is the reaction-diffusion (RD) equation. This allows us to model the spatial movement of chemical or biological actors and also model the life cycle and interaction of the same actors. For this project, we adopt a version of the RD equation which only models the pest as obeying spatial diffusion. The RD PDE for our crops is:
 
 \begin{align}
 	\label{eqn:pde}
@@ -158,7 +158,7 @@ The cost matrices need to weight the deviation of $c$, $p$ and $w$ from their go
 
 For aerial spraying, where $u_k \in \mathbb{R}^{1}$, we additionally weight $R$ by $n^2$ (where the spatial grid is $n \times n$) to make the penalty on the control across the field the same as it would be for a comparable spot spraying optimal control scenario.
 
-After spatial discretization of the crop field into $n \times n$ equally spaced points (with a point on the boundaries), the PDE in equation \ref{eqn:pde} above is converted into a coupled system of ODEs. The Laplacian becomes a (quite sparse, block-diagonal-dominant) matrix $L$. For the purposes of this project, the Laplacian has been discretized for both 1) Dirichlet and 2) Neumann boundary conditions \cite{R5}. When homogenous (0), these boundary conditions correspond, respectively, to 1) no pest at the field boundaries or 2) a boundary impermeable to pests. As mentioned above, we will be simulating a time-constant, spatially varying boundary-normal flux of pests into our field via inhomogenous Neumann boundary conditions. Equation 1 becomes:
+After spatial discretization of the crop field into $n \times n$ equally spaced points (with a point on the boundaries), the PDE in equation \ref{eqn:pde} above is converted into a coupled system of ODEs. The Laplacian becomes a (quite sparse, block-diagonal-dominant) matrix $L$. For the purposes of this project, the Laplacian has been discretized for both 1) Dirichlet and 2) Neumann boundary conditions \cite{R5}. When homogeneous (0), these boundary conditions correspond, respectively, to 1) no pest at the field boundaries or 2) a boundary impermeable to pests. As mentioned above, we will be simulating a time-constant, spatially varying boundary-normal flux of pests into our field via inhomogeneous Neumann boundary conditions. Equation 1 becomes:
 
 \begin{align}
 \dot{\bm{c}} &= -k_{cp} \bm{p} \odot \bm{c} + k_c \left( 1 - \frac{\bm{c}}{K_c} \right) \odot \bm{c} \nonumber \\ 
@@ -203,7 +203,7 @@ where $\hat{J}$ is the value of the objective based on the locally linearized PD
 r_i &:= \frac{\text{Actual reduction in J}}{\text{Predicted reduction in J}}
 \end{align}
 
-Subsequent to this evalation of $r$ at each step of SCP, we then take action to 1) accept or deny the approximate solution, and 2) expand, contract, or keep the current trust region $\rho$:
+Subsequent to this evaluation of $r$ at each step of SCP, we then take action to 1) accept or deny the approximate solution, and 2) expand, contract, or keep the current trust region $\rho$:
 
 \begin{align}
 \text{if } r_i &\geq \eta_1 : \text{accept the update of } \{s,u\} \nonumber \\
@@ -373,7 +373,7 @@ For the same crop yield in this scenario, optimal spot application can save $18.
 
 Optimal control is capable of computing optimal spatio-temporal pesticide application strategies which could achieve large savings in pesticides for the same crop yield and quality of harvested crop. Solving the optimal control problem in 2D and time is a challenge for the implementation of Sequential Convex Programming applied here. It would be interesting to understand the limits of SCP for this PDE, and explore other solution techniques.
 
-The optimal controls obtained via SCP appear to have some unexpected control patterns in time - utlizing pulses of control activity. Are there also some subtle control patterns occurring spatially? Further investigation of the parameter space is warranted to investigate this. In order to apply these controls to actual crop management, we would also need to integrate the detection of pest infestations into our control strategy - unless pest attack patterns were quite repeatable!
+The optimal controls obtained via SCP appear to have some unexpected control patterns in time - utilizing pulses of control activity. Are there also some subtle control patterns occurring spatially? Further investigation of the parameter space is warranted to investigate this. In order to apply these controls to actual crop management, we would also need to integrate the detection of pest infestations into our control strategy - unless pest attack patterns were quite repeatable!
 
 We also have not investigated various control constraints, like limits on pesticide application rate and timings. Presumably aerial control is not done continuously!
 
