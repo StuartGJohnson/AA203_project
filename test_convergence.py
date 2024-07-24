@@ -146,18 +146,18 @@ class MyTestCase(unittest.TestCase):
                           columns=('n_ref', 'n', 'c_max', 'c_err_max', 'c_rel', 'p_max', 'p_err_max', 'p_rel', 'w_max', 'w_err_max', 'w_rel'))
         df.to_excel('convergence_test2' + '.xlsx', index=False)
         dfc = pd.DataFrame(err_tablec,
-                          columns=(r'$n_{ref}$', r'n', r'$\max \| c_{ref} \|_1$', r'$\max \| c-c_{ref} \|_1$',
-                                   r'$\frac{\max \| c-c_{ref} \|_1}{\max \| c_{ref} \|_1}$'))
+                          columns=(r'$n_{ref}$', r'n', r'$\| c_{ref} \|_{\infty}$', r'$\| c-c_{ref} \|_{\infty}$',
+                                   r'$\frac{\| c-c_{ref} \|_{\infty}}{\| c_{ref} \|_{\infty}}$'))
         dfc.to_latex('convergence_test_c2' + '.tex', index=False, float_format="{:0.3f}".format)
         dfp = pd.DataFrame(err_tablep,
                           columns=(r'$n_{ref}$', r'n',
-                                   r'$\max \| p_{ref} \|_1$', r'$\max \| p-p_{ref} \|_1$',
-                                   r'$\frac{\max \| p-p_{ref} \|_1}{\max \| p_{ref} \|_1}$'))
+                                   r'$\| p_{ref} \|_{\infty}$', r'$\| p-p_{ref} \|_{\infty}$',
+                                   r'$\frac{\| p-p_{ref} \|_{\infty}}{\| p_{ref} \|_{\infty}}$'))
         dfp.to_latex('convergence_test_p2' + '.tex', index=False, float_format="{:0.3f}".format)
         dfw = pd.DataFrame(err_tablew,
                           columns=(r'$n_{ref}$', r'n',
-                                   r'$\max \| w_{ref} \|_1$', r'$\max \| w-w_{ref} \|_1$',
-                                   r'$\frac{\max \| w-w_{ref} \|_1}{\max \| w_{ref} \|_1}$'))
+                                   r'$\| w_{ref} \|_{\infty}$', r'$\| w-w_{ref} \|_{\infty}$',
+                                   r'$\frac{\| w-w_{ref} \|_{\infty}}{\| w_{ref} \|_{\infty}}$'))
         dfw.to_latex('convergence_test_w2' + '.tex', index=False, float_format="{:0.3f}".format)
 
 
