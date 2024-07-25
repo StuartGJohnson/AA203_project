@@ -5,7 +5,8 @@ This report is slightly modified in that the code was originally included in the
 Follow-up work on this project is documented in: [Follow-up course report](/reports/post_final.pdf).
 The code supporting these reports is contained in this repo and is described below. These reports are generated with LaTeX using TeXStudio on Windows 10. All TeXStudio droppings are included in the `reports` directory.
 
-Note/disclaimer: This project is an examination of methods of optimal control for a contrived agricultural scenario. It does not advocate for the use of pesticides or any other agricultural methods.
+## Disclaimer
+This project is an examination of methods of optimal control for a contrived agricultural scenario. It does not advocate for the use of pesticides or any other agricultural methods.
 
 ## How the code works
 
