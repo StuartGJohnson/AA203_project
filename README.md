@@ -1,6 +1,6 @@
 # AA203_project
 
-The repo is the result of a project completed as part of the Stanford course AA203 : Optimal and Learning-Based Control. The original report from the course is in: [Course report](/reports/final.pdf).
+This repo is the result of a project completed as part of the Stanford course AA203 : Optimal and Learning-Based Control. The original report from the course is in: [Course report](/reports/final.pdf).
 This report is slightly modified in that the code was originally included in the document.
 Follow-up work on this project is documented in: [Follow-up course report](/reports/post_final.pdf).
 The code supporting these reports is contained in this repo and is described below. These reports are generated with LaTeX using TeXStudio on Windows 10. All TeXStudio droppings are included in the `reports` directory.
@@ -40,7 +40,7 @@ Many run directories were created during development and refinement of SCP and s
 Files in the repo are:
 
 1. `scp_*, sim_*, resim_*`:
-SCP run directories are named as scp_YYMMDD-HHMMSS, PDE simulations are named as sim_YYMMDD-HHMMSS, and re-simulations as resim_YYMMDD-HHMMSS. A re-simulation is a simulation run using the spatio-temporal control found in the corresponding SCP run.
+SCP run directories are named as `scp_YYMMDD-HHMMSS`, PDE simulations are named as `sim_YYMMDD-HHMMSS`, and re-simulations as `resim_YYMMDD-HHMMSS`. A re-simulation is a simulation run using the spatio-temporal control found in the corresponding SCP run.
 2. `reports`: LaTex and generated pdf files. The LaTex files reference output in run directories for figures.
 3. `test_convergence.py / convergence_test*`: code and output related to PDE spatial convergence with grid resolution.
 4. `test_control.py / test_control_*.json`: code and output related to adaptive trust region/spatial grid refinement results. These results are used in the second follow-up report. Running all tests in this file should produce most of the output required for the follow-up report (see reports/post-final.tex).
