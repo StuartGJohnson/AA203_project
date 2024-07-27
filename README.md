@@ -75,3 +75,4 @@ Note these do not reflect work done on SCP convergence after the class completed
 
 1. Diagrams in GitHub `README.md`; supported by `mermaid`. Fully supported in render by PyCharm!
 2. pandas dataframe to_latex() !
+3. Work on this project began as a subdirectory in a repo for the entire class. I generated this repo from that subdirectory using the `git-filter-repo` package. Check out: [git-filter-repo](https://docs.github.com/en/get-started/using-git/splitting-a-subfolder-out-into-a-new-repository).
