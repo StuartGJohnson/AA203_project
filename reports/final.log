@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.12) (preloaded format=pdflatex 2024.1.15)  19 JUL 2024 20:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.12) (preloaded format=pdflatex 2024.1.15)  28 JUL 2024 13:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -762,7 +762,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [4]
-<../sim_240604-091905/time.png, id=115, 614.295pt x 361.35pt>
+<../sim_240604-091905/time.png, id=116, 614.295pt x 361.35pt>
 File: ../sim_240604-091905/time.png Graphic file (type png)
 <use ../sim_240604-091905/time.png>
 Package pdftex.def Info: ../sim_240604-091905/time.png  used on input line 182.
@@ -780,7 +780,7 @@ Overfull \hbox (17.0pt too wide) in paragraph at lines 180--186
  []
 
 [5]
-<../scp_240604-091225/time.png, id=122, 614.295pt x 361.35pt>
+<../scp_240604-091225/time.png, id=123, 614.295pt x 361.35pt>
 File: ../scp_240604-091225/time.png Graphic file (type png)
 <use ../scp_240604-091225/time.png>
 Package pdftex.def Info: ../scp_240604-091225/time.png  used on input line 195.
@@ -798,7 +798,7 @@ Overfull \hbox (17.0pt too wide) in paragraph at lines 193--199
  []
 
 [6 <../sim_240604-091905/time.png>]
-<../scp_240604-085334/time.png, id=129, 614.295pt x 361.35pt>
+<../scp_240604-085334/time.png, id=130, 614.295pt x 361.35pt>
 File: ../scp_240604-085334/time.png Graphic file (type png)
 <use ../scp_240604-085334/time.png>
 Package pdftex.def Info: ../scp_240604-085334/time.png  used on input line 210.
@@ -816,7 +816,7 @@ Overfull \hbox (17.0pt too wide) in paragraph at lines 208--214
  []
 
 [7 <../scp_240604-091225/time.png> <../scp_240604-085334/time.png>] [8]
-<../sim_240604-091905/slices.png, id=144, 462.528pt x 346.896pt>
+<../sim_240604-091905/slices.png, id=145, 462.528pt x 346.896pt>
 File: ../sim_240604-091905/slices.png Graphic file (type png)
 <use ../sim_240604-091905/slices.png>
 Package pdftex.def Info: ../sim_240604-091905/slices.png  used on input line 27
@@ -829,7 +829,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [9]
-<../scp_240604-091225/slices.png, id=150, 462.528pt x 346.896pt>
+<../scp_240604-091225/slices.png, id=151, 462.528pt x 346.896pt>
 File: ../scp_240604-091225/slices.png Graphic file (type png)
 <use ../scp_240604-091225/slices.png>
 Package pdftex.def Info: ../scp_240604-091225/slices.png  used on input line 28
@@ -842,7 +842,7 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [10 <../sim_240604-091905/slices.png>]
-<../scp_240604-085334/slices.png, id=157, 462.528pt x 346.896pt>
+<../scp_240604-085334/slices.png, id=158, 462.528pt x 346.896pt>
 File: ../scp_240604-085334/slices.png Graphic file (type png)
 <use ../scp_240604-085334/slices.png>
 Package pdftex.def Info: ../scp_240604-085334/slices.png  used on input line 29
@@ -892,9 +892,9 @@ m/cmsy8.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/cm/cmti10.pfb><C:/Users/sjohnson/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/sjohnson/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on final.pdf (12 pages, 432707 bytes).
+Output written on final.pdf (12 pages, 432988 bytes).
 PDF statistics:
- 258 PDF objects out of 1000 (max. 8388607)
+ 259 PDF objects out of 1000 (max. 8388607)
  44 named destinations out of 1000 (max. 500000)
  163 words of extra memory for PDF output out of 10000 (max. 10000000)
 
