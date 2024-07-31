@@ -91,7 +91,7 @@ and boundary conditions defined on the crop field boundary $\partial\Omega$:
 \item $\nabla p(x,y,t) \cdot \hat{n} = b_p(x,y,t)$ inhomogeneous Neumann normal pest flux at the boundary
 \end{itemize}
 
-[Important note/Disclaimer: the parameters of this RD model are not necessarily indicative of actual parameters to be encountered in an any actual field of crops. Parameters were varied and sampled in such a way to yield interesting model behavior and investigate the numerical techniques involved.]
+[Important note/Disclaimer: the parameters of this RD model are not necessarily indicative of actual parameters to be encountered in an any actual field of crops. Parameters were varied and sampled in such a way to yield interesting model behavior and investigate the numerical techniques involved. However, using corn as a reference, one could assume that time is measured in weeks, and distance in km.]
 
 We model crop density limits via "logistic" growth in the term $k_c \left( 1 - \frac{c}{K_c} \right) c$. This limits the equilibrium crop density to $K_c$. This PDE exhibits a number of interesting growth/consumption patterns - like waves of pest density moving in response to crop consumption and pest diffusion.
 
@@ -128,7 +128,7 @@ where (see also the Experiments section):
 \setlength\itemsep{-1pt}
 \item $J$ is the objective to be minimized
 \item $k \in \{0, \dots N-1\}$ is the discrete time index, where $N = T/dt$
-\item $T$ is the harvest time, and $dt$ is the discrete time step
+\item $T$ is the harvest time, and $dt$ is the discrete time step. [Suggested unit: weeks]
 \item $f_d$ is the discrete time, locally linearized evolution of state (from equation \ref{eqn:pde})
 \item $s_k \in \mathbb{R}^{3n^2}$
 \item $u_k \in \mathbb{R}^{n^2}$ for full control, or:
@@ -175,7 +175,7 @@ where
 \item $\bm{b}_p$ is the boundary flux of pests, defined at the boundary points
 \item $n$ is the spatial grid resolution (the grid is $n \times n$)
 \item $h = D / (n-1)$ is the grid cell size
-\item $D$ is the spatial extent of the crop field ($D \times D$) in each dimension
+\item $D$ is the spatial extent of the crop field ($D \times D$) in each dimension [Suggested unit: km]
 \end{itemize}
 
 The $h^2$ factor has not been included in $L$ to make it clear which terms depend explicitly on the grid resolution or the spatial extent of the crop field $D$. A clear and explicit discussion of the Laplacian finite difference matrix can be found in \cite{R5}. Also, as we will be refining the grid to accelerate convergence of SCP (Sequential Convex Programming), the correct dependence on $h$ is essential.
@@ -278,13 +278,13 @@ We investigate the impact of a spatio-temporal approach to optimizing pesticide 
 	\item Exp 2: Spot spraying: optimal time and spatial pattern of pesticide application rate $u$ to be found via optimal control methods. Compute total pesticide quantity applied. $d_p$, the pesticide diffusion constant, is varied from $.05 - 0.4$.
 \end{itemize}
 
-As opposed to the previous report (\texttt{reports/final\_report.pdf}), we do not show results for no control (0 pesticide rate). We compare results for the re-simulated growing season using the optimal controls $u$ computed by SCP for each condition - although the difference in state space between the re-simulated and state space resulted returned by SCP were not significant.
+As opposed to the previous report (\texttt{reports/final\_report.pdf}), we do not show results for no control (0 pesticide rate). We compare results for the re-simulated growing season using the optimal controls $u$ computed by SCP for each condition - although the difference in state space between the re-simulated and state space returned by SCP were not significant.
 
 \subsection{Exp 1: Aerial Spraying}
 
 Aerial spraying is defined by spatially constant control - or the same spraying rate across the whole field. We find the optimal time trajectory of this control via SCP. 
 
-For Exp 1, the optimal control solutions (figure \ref{fig: aerialslow} and figure \ref{fig: aerialfast} and figure 5 in the Appendix) show a mildly oscillatory control pattern, with a rise in pesticide application rate in the middle of the growing season. The optimal control problem penalizes the density of active pesticide at harvest time, so early applications of pesticide are preferred. Generally speaking, when we interchange the relative weightings of the $P$ and $Q$ cost matrices (so the terminal cost is reduced), the optimal control is non-zero much later in the growing season.
+For Exp 1, the optimal control solutions (figure \ref{fig: aerialslow} and figure \ref{fig: aerialfast} - see also Appendix 1) show a mildly oscillatory control pattern, with a rise in pesticide application rate in the middle of the growing season. The optimal control problem penalizes the density of active pesticide at harvest time, so early applications of pesticide are preferred. Generally speaking, when we interchange the relative weightings of the $P$ and $Q$ cost matrices (so the terminal cost is reduced), the optimal control is non-zero much later in the growing season.
 
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -307,9 +307,9 @@ For Exp 1, the optimal control solutions (figure \ref{fig: aerialslow} and figur
 
 Spot spraying allows for complete spatial (and time) control of pesticide application.
 
-Figure \ref{fig: spotslow} and figure 6 in the Appendix show the optimal solution when spot spraying is used. While the general time trend is similar to Exp 1, the late application spike is both later in the season and concentrated in the southeast corner. The late spike in control is somewhat surprising.
+Figures \ref{fig: spotslow} and \ref{fig: spotfast} (see also Appendix 1) show the optimal solution when spot spraying is used. While the general time trend is similar to Exp 1, the late application spike is both later in the season and concentrated in the southeast corner. The late spike in control is somewhat surprising.
 
-In figure 3, the total control subplot is quite a bit lower than the aerial application case, and the active pesticide remaining at harvest time is less. This is reviewed in the next section.
+In figures \ref{fig: spotslow} and \ref{fig: spotfast}, the total control subplot is quite a bit lower than the aerial application case, and the active pesticide remaining at harvest time is less. This is reviewed in the next section.
 
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -367,7 +367,7 @@ Collecting the results for Exp 1 and Exp 2 at harvest time, we have:
     \end{tabular}
 \end{center}
 
-For the same crop yield in this scenario, optimal spot application can save $18.8\%$ to $46.0\%$ in pesticide applied over aerial spraying. Harvest quality, in terms of active pesticide on the crops, is also significantly better in spot spraying. Pests with more mobility (higher $d_p$ ) rapidly decrease the spot spraying advantage. Note is is possible that our selection of quadratic losses is favoring aerial spraying (see the conclusions section).
+For the same crop yield in this scenario, optimal spot application can save $18.8\%$ to $46.0\%$ in pesticide applied over aerial spraying. Harvest quality, in terms of active pesticide on the crops, is also significantly better in spot spraying. Pests with more mobility (higher $d_p$ ) rapidly decrease the spot spraying advantage. It is possible that our selection of quadratic losses is favoring aerial spraying (see the conclusions section).
 
 \section{Conclusions and Future Work}
 
@@ -417,6 +417,7 @@ Below are plots of control and state spaces at a sequence of times during the gr
 		\includegraphics[width=0.8\linewidth]{../resim_240718-021040/slices.png}
 		\captionof{figure}{Pest attack scenario with aerial spraying control: spatial slices.  c= crop density, p = pest density, w = pesticide density, u = pesticide application rate. Slow pest diffusion: $d_p = 0.05$.}
 		\vspace{5pt}
+		\label{fig: appaerialslow}
 	\end{center}
 \end{minipage}
 
@@ -425,6 +426,7 @@ Below are plots of control and state spaces at a sequence of times during the gr
 		\includegraphics[width=0.8\linewidth]{../resim_240718-005456/slices.png}
 		\captionof{figure}{Pest attack scenario with aerial spraying control: spatial slices.  c= crop density, p = pest density, w = pesticide density, u = pesticide application rate. Fast pest diffusion: $d_p = 0.4$.}
 		\vspace{5pt}
+		\label{fig: appaerialfast}
 	\end{center}
 \end{minipage}
 
@@ -439,6 +441,7 @@ Below are plots of control and state spaces at a sequence of times during the gr
 		\includegraphics[width=0.8\linewidth]{../resim_240718-033400/slices.png}
 		\captionof{figure}{Pest attack scenario with spot spraying control: spatial slices. c= crop density, p = pest density, w = pesticide density, u = pesticide application rate. Slow pest diffusion: $d_p = 0.05$.}
 		\vspace{5pt}
+		\label{fig: appspotslow}
 	\end{center}
 \end{minipage}
 
@@ -447,6 +450,7 @@ Below are plots of control and state spaces at a sequence of times during the gr
 		\includegraphics[width=0.8\linewidth]{../resim_240718-012904/slices.png}
 		\captionof{figure}{Pest attack scenario with spot spraying control: spatial slices. c= crop density, p = pest density, w = pesticide density, u = pesticide application rate. Fast pest diffusion: $d_p = 0.4$.}
 		\vspace{5pt}
+		\label{fig: appspotfast}
 	\end{center}
 \end{minipage}
 
