@@ -19,7 +19,7 @@ Developing and refining sequential convex programming (SCP) to solve an optimal 
 
 The code in this repo is also not in any sense of the word production code. It is experimental code used to develop and refine convergent SCP for the parabolic PDE involved. It's main intent is to manage lots of numerical experiments in a reproducible way. It also provides figures for related reports. One could argue this is a lot of overhead for what is accomplished.
 
-A diagram of the functionality is as follows (at last check, this diagram is not rendered properly in the automated gihub pages generation process - it does work in the repo README.md):
+A diagram of the functionality is as follows (at last check, this diagram is not rendered properly in the automated github pages generation process - it does work in the repo README.md):
 
 ```mermaid
 flowchart
